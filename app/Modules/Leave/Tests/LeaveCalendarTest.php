@@ -5,9 +5,11 @@ namespace App\Modules\Leave\Tests;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Modules\Leave\Database\Seeders\LeaveTypeSeeder;
+use App\Modules\Leave\Filament\Pages\LeaveCalendar;
 use App\Modules\Leave\Filament\Widgets\LeaveCalendarWidget;
 use App\Modules\Leave\Models\Holiday;
 use App\Modules\Leave\Models\Leave;
+use App\Modules\Leave\Models\LeaveType;
 use Database\Seeders\RolePermissionSeeder;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -166,6 +168,92 @@ class LeaveCalendarTest extends TestCase
 
         $calendar->set('departmentId', null)->set('leaveType', 'Annual Leave');
         $this->assertSame(['Bob Test - Annual Leave'], $this->titles($calendar));
+    }
+
+    /**
+     * Background colours of the events displayed in November 2026, by title.
+     *
+     * @return array<string, string>
+     */
+    private function colors($component): array
+    {
+        return collect($component->instance()->getEventsJs([
+            'startStr' => '2026-10-26T00:00:00',
+            'endStr' => '2026-12-07T00:00:00',
+            'tzOffset' => 0,
+        ]))->pluck('backgroundColor', 'title')->all();
+    }
+
+    public function test_the_admin_sees_the_colour_of_each_leave_type(): void
+    {
+        $this->leave($this->alice, '2026-11-10', '2026-11-11', 'Approved', 'Sick Leave');
+        $this->leave($this->bob, '2026-11-16', '2026-11-18', 'Pending', 'Annual Leave');
+        LeaveType::where('name', 'Annual Leave')->update(['color' => '#123456']);
+        $this->as($this->admin, 'admin');
+
+        $colors = $this->colors(Livewire::test(LeaveCalendarWidget::class));
+
+        $this->assertSame('#dc2626', $colors['Alice Test - Sick Leave']);
+        // Approved or pending: the colour is the one of the type
+        $this->assertSame('#123456', $colors['Bob Test - Annual Leave (pending)']);
+    }
+
+    public function test_an_employee_cannot_tell_the_leave_type_of_a_colleague_from_the_colour(): void
+    {
+        $this->leave($this->bob, '2026-11-10', '2026-11-11', 'Approved', 'Sick Leave');
+        $this->leave($this->alice, '2026-11-16', '2026-11-18', 'Approved', 'Sick Leave');
+        $this->as($this->alice, 'portal');
+
+        $colors = $this->colors(Livewire::test(LeaveCalendarWidget::class));
+
+        $this->assertSame(LeaveCalendarWidget::COLLEAGUE_COLOR, $colors['Bob Test']);
+        $this->assertNotSame($colors['Bob Test'], $colors['Me - Sick Leave']);
+        $this->assertSame('#dc2626', $colors['Me - Sick Leave']);
+    }
+
+    public function test_a_leave_type_without_colour_gets_a_fallback_colour(): void
+    {
+        $type = LeaveType::create(['name' => 'Study Leave']);
+        $this->assertSame(LeaveType::FALLBACK_COLORS[($type->id - 1) % count(LeaveType::FALLBACK_COLORS)], $type->displayColor());
+    }
+
+    public function test_the_text_colour_is_readable_on_light_and_dark_backgrounds(): void
+    {
+        $this->assertSame('#ffffff', LeaveType::textColorFor('#2563eb'));
+        $this->assertSame('#111827', LeaveType::textColorFor('#fde68a'));
+    }
+
+    public function test_the_seeder_does_not_overwrite_the_colour_chosen_by_an_admin(): void
+    {
+        LeaveType::where('name', 'Sick Leave')->update(['color' => '#000000']);
+
+        $this->seed(LeaveTypeSeeder::class);
+
+        $this->assertSame('#000000', LeaveType::where('name', 'Sick Leave')->value('color'));
+        $this->assertSame('#2563eb', LeaveType::where('name', 'Annual Leave')->value('color'));
+    }
+
+    public function test_the_legend_lists_the_leave_types_for_an_admin(): void
+    {
+        $this->as($this->admin, 'admin');
+
+        $labels = collect((new LeaveCalendar())->getLegend())->pluck('label');
+
+        $this->assertTrue($labels->contains('Annual Leave'));
+        $this->assertTrue($labels->contains('Sick Leave'));
+        $this->assertTrue($labels->contains('Public holiday'));
+    }
+
+    public function test_the_legend_of_an_employee_has_the_colleagues_and_only_the_types_they_may_take(): void
+    {
+        $this->as($this->alice, 'portal'); // a man: no maternity leave
+
+        $labels = collect((new LeaveCalendar())->getLegend())->pluck('label');
+
+        $this->assertTrue($labels->contains('Colleague on leave'));
+        $this->assertTrue($labels->contains('My Annual Leave'));
+        $this->assertTrue($labels->contains('My Paternity Leave'));
+        $this->assertFalse($labels->contains('My Maternity Leave'));
     }
 
     public function test_the_pages_are_open_to_the_admin_and_to_employees(): void

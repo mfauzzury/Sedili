@@ -134,7 +134,6 @@ class LeaveCalendarWidget extends CalendarWidget
             ->get()
             ->map(function (Leave $leave) use ($isAdmin, $me) {
                 $own = (int) $leave->employee_id === $me;
-                $pending = $leave->status === 'Pending';
                 $name = $leave->employee?->name ?? 'Unknown';
 
                 $title = match (true) {
@@ -142,9 +141,15 @@ class LeaveCalendarWidget extends CalendarWidget
                     $own => "Me - {$leave->leave_type}",
                     default => $name, // colleagues: no leave type
                 };
-                if ($pending) {
+                if ($leave->status === 'Pending') {
                     $title .= ' (pending)';
                 }
+
+                // The colour is the one of the leave type. An employee does not see the type of the
+                // leave of the colleagues, so a colour per type would give it away: neutral colour.
+                $color = ($isAdmin || $own)
+                    ? $this->typeColors()[$leave->leave_type] ?? LeaveType::UNKNOWN_COLOR
+                    : self::COLLEAGUE_COLOR;
 
                 return CalendarEvent::make()
                     ->key('leave-' . $leave->id)
@@ -153,9 +158,28 @@ class LeaveCalendarWidget extends CalendarWidget
                     // The end of an all day event is exclusive
                     ->end($this->localDay($leave->end_date)->addDay())
                     ->allDay()
-                    ->backgroundColor($pending ? '#fde68a' : ($own && !$isAdmin ? '#0891b2' : '#16a34a'))
-                    ->textColor($pending ? '#78350f' : '#ffffff');
+                    ->backgroundColor($color)
+                    ->textColor(LeaveType::textColorFor($color));
             });
+    }
+
+    /** Colour of the leave of the colleagues in the employee portal (all types look the same) */
+    public const COLLEAGUE_COLOR = '#16a34a';
+
+    /** Colour of the public holidays */
+    public const HOLIDAY_COLOR = '#e5e7eb';
+
+    /** @var array<string, string>|null */
+    private ?array $typeColors = null;
+
+    /**
+     * Colour of every leave type, by name of the type.
+     *
+     * @return array<string, string>
+     */
+    private function typeColors(): array
+    {
+        return $this->typeColors ??= LeaveType::all()->mapWithKeys(fn(LeaveType $type) => [$type->name => $type->displayColor()])->all();
     }
 
     /**
@@ -173,7 +197,7 @@ class LeaveCalendarWidget extends CalendarWidget
                 ->start($this->localDay($holiday->date))
                 ->end($this->localDay($holiday->date)->addDay())
                 ->allDay()
-                ->backgroundColor('#e5e7eb')
+                ->backgroundColor(self::HOLIDAY_COLOR)
                 ->textColor('#374151'));
     }
 }
