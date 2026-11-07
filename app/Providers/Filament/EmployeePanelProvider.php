@@ -54,6 +54,7 @@ class EmployeePanelProvider extends PanelProvider
                 ...$modules->filament('portal', 'pages'),
             ])
             ->resources($modules->filament('portal', 'resources'))
+            ->livewireComponents($modules->filament('portal', 'livewire'))
             ->discoverWidgets(in: app_path('Filament/Employee/Widgets'), for: 'App\\Filament\\Employee\\Widgets')
             ->widgets($modules->filament('portal', 'widgets'))
 

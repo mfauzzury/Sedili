@@ -53,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 ...$modules->filament('admin', 'pages'),
             ])
             ->resources($modules->filament('admin', 'resources'))
+            ->livewireComponents($modules->filament('admin', 'livewire'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 StatsOverview::class,

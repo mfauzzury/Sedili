@@ -44,7 +44,11 @@ abstract class Module
      * Filament classes added to a panel while the module is enabled.
      *
      * @param string $panelId id of the panel (admin, portal)
-     * @return array{resources?: list<class-string>, pages?: list<class-string>, widgets?: list<class-string>}
+     * "widgets" are shown on the dashboard. "livewire" registers a Livewire component without
+     * showing it on the dashboard (for example a widget embedded in one of the pages of the module):
+     * Livewire answers HTTP 419 to the requests of a component it does not know.
+     *
+     * @return array{resources?: list<class-string>, pages?: list<class-string>, widgets?: list<class-string>, livewire?: list<class-string>}
      */
     public function filament(string $panelId): array
     {
