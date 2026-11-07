@@ -6,3 +6,9 @@
 @source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
 @source '../../../../vendor/guava/calendar/resources/**/*';
 @import "../../../../vendor/guava/calendar/resources/css/theme.css";
+
+/* Slightly more compact sidebar: 36px items instead of 40px (the text keeps its size) */
+.fi-sidebar-item-btn,
+.fi-sidebar-group-btn {
+    padding-block: 6px;
+}
