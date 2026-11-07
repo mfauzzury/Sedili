@@ -1,7 +1,7 @@
 <?php
 namespace App\Filament\Resources\Leaves\Schemas;
 
-use App\Models\Leave;
+use App\Models\{Leave, LeaveType};
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -44,7 +44,7 @@ class LeaveTable
                     ->date()
                     ->label('End Date'),
                 TextColumn::make('duration')
-                    ->label('Duration(Days)'),
+                    ->label('Days'),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -94,15 +94,7 @@ class LeaveTable
                         ->default(null),
                     SelectFilter::make('leave_type')
                         ->label('Leave Type')
-                        ->options([
-                            'Sick Leave' => 'Sick Leave',
-                            'Vacation' => 'Vacation',
-                            'Personal Leave' => 'Personal Leave',
-                            'Maternity Leave' => 'Maternity Leave',
-                            'Paternity Leave' => 'Paternity Leave',
-                            'Bereavement Leave' => 'Bereavement Leave',
-                            'Other' => 'Other',
-                        ])
+                        ->options(fn() => LeaveType::orderBy('id')->pluck('name', 'name'))
                         ->default(null),
 
                 ]

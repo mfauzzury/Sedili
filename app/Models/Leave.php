@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Services\LeaveService;
 use Illuminate\Database\Eloquent\Model;
 
 class Leave extends Model
@@ -15,6 +15,7 @@ class Leave extends Model
         'leave_type',
         'start_date',
         'end_date',
+        'days',
         'status',
         'rejection_reason',
         'notes'
@@ -23,17 +24,37 @@ class Leave extends Model
         'leave_date' => 'datetime:H:i',
         'start_date' => 'date',
         'end_date' => 'date',
+        'days' => 'float',
     ];
     protected $appends = [
         'duration',
 
     ];
 
-    public function getDurationAttribute()
+    /**
+     * Compute the number of days charged to the balance each time a leave is saved.
+     */
+    protected static function booted(): void
     {
-        $start = Carbon::parse($this->start_date);
-        $end = Carbon::parse($this->end_date);
-        return $start->diffInDays($end);
+        static::saving(function (Leave $leave) {
+            if ($leave->start_date === null || $leave->end_date === null) {
+                return;
+            }
+            $type = LeaveType::where('name', $leave->leave_type)->first();
+            $leave->days = app(LeaveService::class)->countDays(
+                $leave->start_date,
+                $leave->end_date,
+                (bool) $type?->count_calendar_days
+            );
+        });
+    }
+
+    /**
+     * Number of leave days (working days, see LeaveService).
+     */
+    public function getDurationAttribute(): float
+    {
+        return (float) $this->days;
     }
 
 
