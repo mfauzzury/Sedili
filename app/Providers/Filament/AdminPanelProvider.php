@@ -4,7 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Register;
 use Filament\Pages\Dashboard;
-use App\Filament\Pages\TaskBoard;
+use App\Modules\ModuleManager;
 use App\Filament\Resources\Departments\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -26,6 +26,8 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $modules = app(ModuleManager::class);
+
         return $panel
             ->spa()
 
@@ -50,17 +52,20 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
-                TaskBoard::class,
+                ...$modules->filament('admin', 'pages'),
             ])
+            ->resources($modules->filament('admin', 'resources'))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 StatsOverview::class,
                 \App\Filament\Resources\Employees\Widgets\StatsOverview::class,
+                ...$modules->filament('admin', 'widgets'),
             ])
             ->navigationGroups([
                 'Work space',
                 'Organization',
                 'HR Management',
+                'System',
             ])
             ->authMiddleware([
                 Authenticate::class,

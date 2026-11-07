@@ -3,7 +3,7 @@
 namespace App\Providers\Filament;
 
 use Filament\Pages\Dashboard;
-use App\Filament\Pages\TaskBoard;
+use App\Modules\ModuleManager;
 
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -22,13 +22,13 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Resources\Messages\MessageResource;
-use App\Filament\Widgets\AllCalendarWidget;
 
 class EmployeePanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $modules = app(ModuleManager::class);
+
         return $panel
             ->id('portal')
             ->path('portal')
@@ -51,16 +51,11 @@ class EmployeePanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Employee/Pages'), for: 'App\\Filament\\Employee\\Pages')
             ->pages([
                 Dashboard::class,
-                TaskBoard::class,
+                ...$modules->filament('portal', 'pages'),
             ])
-            ->resources([
-                MessageResource::class
-            ])
+            ->resources($modules->filament('portal', 'resources'))
             ->discoverWidgets(in: app_path('Filament/Employee/Widgets'), for: 'App\\Filament\\Employee\\Widgets')
-            ->widgets([
-
-                AllCalendarWidget::class
-            ])
+            ->widgets($modules->filament('portal', 'widgets'))
 
             ->navigationGroups([
                 'Work space'

@@ -5,11 +5,9 @@ namespace App\Providers;
 use App\Models\Department;
 use App\Observers\DepartmentObserver;
 use App\Observers\EmployeeObserver;
-use App\Observers\MessageObserver;
-use App\Observers\TaskObserver;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use App\Models\{Task, Message, Employee};
+use App\Models\{Employee};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,8 +30,6 @@ class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configureModels();
         $this->configureUrl();
-        Task::observe(TaskObserver::class);
-        Message::observe(MessageObserver::class);
         Department::observe(DepartmentObserver::class);
         Employee::observe(EmployeeObserver::class);
 
