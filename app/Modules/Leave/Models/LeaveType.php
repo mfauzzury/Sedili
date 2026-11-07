@@ -13,6 +13,7 @@ class LeaveType extends Model
         'tiers',
         'gender_restriction',
         'count_calendar_days',
+        'requires_attachment',
         'is_active',
     ];
 
@@ -20,6 +21,7 @@ class LeaveType extends Model
         'days_per_year' => 'float',
         'tiers' => 'array',
         'count_calendar_days' => 'boolean',
+        'requires_attachment' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -28,6 +30,14 @@ class LeaveType extends Model
 
     /** Colour of a leave type name that does not exist (deleted type) */
     public const UNKNOWN_COLOR = '#64748b';
+
+    /**
+     * Does this leave type (by name) require a document, such as a medical certificate?
+     */
+    public static function requiresEvidence(?string $name): bool
+    {
+        return filled($name) && (bool) static::where('name', $name)->value('requires_attachment');
+    }
 
     /**
      * Colour displayed in the calendar: the chosen one, or one of the fallback colours.

@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Pages\Dashboard;
 use App\Modules\ModuleManager;
+use App\Services\CompanyProfile;
 
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -43,9 +44,9 @@ class EmployeePanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
 
-            ->brandName(
-                'Portal',
-            )
+            ->brandName(fn() => app(CompanyProfile::class)->name() ?? 'Portal')
+            ->brandLogo(fn() => app(CompanyProfile::class)->logoUrl())
+            ->brandLogoHeight('1.5rem')
 
 
             ->discoverResources(in: app_path('Filament/Employee/Resources'), for: 'App\\Filament\\Employee\\Resources')

@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Pages\Dashboard;
 use App\Modules\ModuleManager;
+use App\Services\CompanyProfile;
 use App\Filament\Resources\Departments\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -39,9 +40,9 @@ class AdminPanelProvider extends PanelProvider
 
             ->databaseNotifications()
             ->authPasswordBroker('employees')
-            ->brandName(
-                'Admin Panel',
-            )
+            ->brandName(fn() => app(CompanyProfile::class)->name() ?? 'Admin Panel')
+            ->brandLogo(fn() => app(CompanyProfile::class)->logoUrl())
+            ->brandLogoHeight('1.5rem')
             ->colors([
                 'primary' => Color::Sky,
             ])

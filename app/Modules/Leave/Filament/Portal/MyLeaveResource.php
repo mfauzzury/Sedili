@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Modules\Leave\Filament\Portal\Pages\ListMyLeaves;
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Models\LeaveType;
+use App\Modules\Leave\Services\LeaveAttachment;
 use App\Modules\Leave\Services\LeaveService;
 use Carbon\Carbon;
 use Closure;
@@ -112,6 +113,8 @@ class MyLeaveResource extends Resource
                 ->label('Reason / notes')
                 ->nullable()
                 ->columnSpanFull(),
+            LeaveAttachment::field(fn(Get $get): bool => LeaveType::requiresEvidence($get('leave_type')))
+                ->columnSpanFull(),
         ]);
     }
 
@@ -132,11 +135,34 @@ class MyLeaveResource extends Resource
                         'Rejected' => 'danger',
                         default => 'gray',
                     }),
+                TextColumn::make('attachment')->label('Evidence')
+                    ->state(fn(Leave $record) => $record->attachment ? 'View' : '-')
+                    ->color('primary')
+                    ->url(fn(Leave $record) => LeaveAttachment::url($record))
+                    ->openUrlInNewTab(),
                 TextColumn::make('rejection_reason')->label('Reason of the rejection')->placeholder('-')->limit(60),
                 TextColumn::make('notes')->label('Notes')->placeholder('-')->limit(60)
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([
+                Action::make('attachEvidence')
+                    ->label('Attach evidence')
+                    ->icon('heroicon-o-paper-clip')
+                    ->modalHeading('Attach evidence')
+                    ->modalDescription('For example a medical certificate. It is only visible to you, your supervisor and HR.')
+                    ->modalSubmitActionLabel('Attach')
+                    ->schema([
+                        LeaveAttachment::field(fn(): bool => true),
+                    ])
+                    ->visible(fn(Leave $record) => self::canAttachEvidence($record))
+                    ->action(function (Leave $record, array $data) {
+                        // Checked again on the server: the visibility only hides the button
+                        if (!self::canAttachEvidence($record) || blank($data['attachment'] ?? null)) {
+                            return;
+                        }
+                        $record->update(['attachment' => $data['attachment']]);
+                        Notification::make()->title('Evidence attached')->success()->send();
+                    }),
                 Action::make('cancel')
                     ->label('Cancel')
                     ->icon('heroicon-o-x-mark')
@@ -153,6 +179,16 @@ class MyLeaveResource extends Resource
                         Notification::make()->title('Leave request cancelled')->success()->send();
                     }),
             ]);
+    }
+
+    /**
+     * The owner can add the document later to a request that has none, unless it was rejected.
+     */
+    public static function canAttachEvidence(Leave $record): bool
+    {
+        return blank($record->attachment)
+            && $record->status !== 'Rejected'
+            && (int) $record->employee_id === (int) Auth::id();
     }
 
     public static function isCancellable(Leave $record): bool

@@ -21,8 +21,17 @@ class StatsOverview extends BaseWidget
         return redirect()->to('employees?tableFilters[is_active][isActive]=true&tableFilters[is_inactive][isActive]=false');
     }
 
+    public function redirectToWithoutSupervisor()
+    {
+        return redirect()->to('employees?tableFilters[is_active][isActive]=true&tableFilters[is_inactive][isActive]=false&tableFilters[no_supervisor][isActive]=true');
+    }
+
     protected function getStats(): array
     {
+        // The same people as the Employees list, which does not show the admins
+        $withoutSupervisor = Employee::role('employee')->withoutRole('admin')
+            ->where('is_active', true)->withoutSupervisor()->count();
+
         $commonAttributes = [
             'class' => 'cursor-pointer',
             'wire:click' => "redirectToEmployees()",
@@ -58,6 +67,19 @@ class StatsOverview extends BaseWidget
                     ]
                 )
                 ->icon('heroicon-o-x-circle'),
+            Stat::make('Without supervisor', $withoutSupervisor)
+                ->label('Without supervisor')
+                ->description($withoutSupervisor === 0
+                    ? 'Every active employee has a supervisor'
+                    : 'Active employees with no supervisor and no department manager')
+                ->color($withoutSupervisor === 0 ? 'success' : 'warning')
+                ->extraAttributes(
+                    [
+                        'class' => 'cursor-pointer',
+                        'wire:click' => "redirectToWithoutSupervisor()"
+                    ]
+                )
+                ->icon('heroicon-o-exclamation-triangle'),
         ];
     }
 }

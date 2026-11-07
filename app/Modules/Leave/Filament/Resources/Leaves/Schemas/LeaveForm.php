@@ -3,6 +3,7 @@ namespace App\Modules\Leave\Filament\Resources\Leaves\Schemas;
 
 use App\Models\{Employee};
 use App\Modules\Leave\Models\LeaveType;
+use App\Modules\Leave\Services\LeaveAttachment;
 use App\Modules\Leave\Services\LeaveService;
 use Carbon\Carbon;
 use Closure;
@@ -76,6 +77,12 @@ class LeaveForm
                     ->nullable()
                     ->columnSpan('full')
                     ->label('Notes'),
+                // Required for a new request, unless it is rejected; an existing one can be decided without
+                LeaveAttachment::field(
+                    fn(Get $get, ?Model $record): bool => $record === null
+                        && $get('status') !== 'Rejected'
+                        && LeaveType::requiresEvidence($get('leave_type'))
+                )->columnSpan('full'),
             ]);
     }
 

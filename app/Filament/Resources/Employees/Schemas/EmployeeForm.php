@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Employees\Schemas;
 use Filament\Forms\Components\{TextInput, DatePicker, Select, Toggle, TextArea};
 use Filament\Schemas\Schema;
-use App\Models\{Position, Department};
+use App\Models\{Employee, Position, Department};
+use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Schemas\Components\{Section, Grid};
 use Illuminate\Database\Eloquent\Builder;
 class EmployeeForm
@@ -160,6 +162,35 @@ class EmployeeForm
                                         ])->id;
                                     })
                                     ->native(false),
+                                Select::make('supervisor_id')
+                                    ->label('Supervisor')
+                                    ->options(fn(?Model $record) => Employee::query()
+                                        ->where('is_active', true)
+                                        ->when($record, fn(Builder $query) => $query->whereKeyNot($record->getKey()))
+                                        ->orderBy('first_name')->orderBy('last_name')
+                                        ->get()->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->placeholder('Use the department manager')
+                                    ->helperText('Who this employee reports to. Leave empty to use the manager of the department.')
+                                    ->rules([
+                                        // Nobody can report, directly or not, to someone who reports to them
+                                        fn(?Model $record): Closure => function (string $attribute, $value, Closure $fail) use ($record) {
+                                            if ($record === null || blank($value)) {
+                                                return;
+                                            }
+                                            $id = (int) $value;
+                                            $seen = [];
+                                            while ($id && !isset($seen[$id])) {
+                                                if ($id === $record->getKey()) {
+                                                    $fail('This employee already reports to the selected supervisor.');
+                                                    return;
+                                                }
+                                                $seen[$id] = true;
+                                                $id = (int) Employee::whereKey($id)->value('supervisor_id');
+                                            }
+                                        },
+                                    ])
+                                    ->nullable(),
                                 Select::make('employment_type')
                                     ->options([
                                         'Permanent' => 'Permanent',

@@ -52,6 +52,9 @@ class LeaveTypeResource extends Resource
             Toggle::make('count_calendar_days')
                 ->label('Count weekends and holidays')
                 ->helperText('For example maternity leave is counted in consecutive days.'),
+            Toggle::make('requires_attachment')
+                ->label('Evidence required')
+                ->helperText('The employee must attach a document, for example a medical certificate, to request this leave.'),
             Toggle::make('is_active')
                 ->label('Active')
                 ->default(true),
@@ -72,6 +75,7 @@ class LeaveTypeResource extends Resource
                         ->implode(' / ') ?: '-'),
                 TextColumn::make('gender_restriction')->label('Only for')->default('Everyone'),
                 IconColumn::make('count_calendar_days')->label('Calendar days')->boolean(),
+                IconColumn::make('requires_attachment')->label('Evidence required')->boolean(),
                 IconColumn::make('is_active')->label('Active')->boolean(),
             ])
             ->recordActions([

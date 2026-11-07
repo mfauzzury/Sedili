@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Department;
 use App\Observers\DepartmentObserver;
 use App\Observers\EmployeeObserver;
+use App\Services\MailSettings;
+use App\Services\SettingsStore;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use App\Models\{Employee};
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(SettingsStore::class);
     }
 
     /**
@@ -30,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configureModels();
         $this->configureUrl();
+        // SMTP server chosen in System > Email (when it is enabled), instead of the .env values
+        $this->app->make(MailSettings::class)->apply();
         Department::observe(DepartmentObserver::class);
         Employee::observe(EmployeeObserver::class);
 

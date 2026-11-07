@@ -66,6 +66,17 @@ abstract class Module
     }
 
     /**
+     * Sample emails of the module, shown in System > Email to preview the layout. Each one is built
+     * for the admin who looks at the preview, from sample data that is never saved.
+     *
+     * @return array<string, \Closure(\App\Models\Employee): \Illuminate\Notifications\Messages\MailMessage> label => builder
+     */
+    public function emailPreviews(): array
+    {
+        return [];
+    }
+
+    /**
      * Called at boot, only when the module is enabled (observers, events, etc.).
      */
     public function boot(): void
