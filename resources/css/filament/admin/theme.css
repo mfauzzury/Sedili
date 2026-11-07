@@ -21,3 +21,8 @@
 .dark .fi-sidebar {
     border-inline-end-color: rgb(255 255 255 / 0.1);
 }
+
+/* Slightly lower top bar: 56px instead of 64px (the sidebar header follows) */
+.fi-body {
+    --topbar-height: 3.5rem;
+}
