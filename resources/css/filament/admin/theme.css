@@ -12,3 +12,12 @@
 .fi-sidebar-group-btn {
     padding-block: 6px;
 }
+
+/* Separate the sidebar from the content with a thin border (same colour as the borders of the cards) */
+.fi-sidebar {
+    border-inline-end: 1px solid var(--gray-200);
+}
+
+.dark .fi-sidebar {
+    border-inline-end-color: rgb(255 255 255 / 0.1);
+}
