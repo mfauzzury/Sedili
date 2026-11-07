@@ -5,6 +5,8 @@ namespace App\Modules\Leave;
 use App\Modules\Leave\Database\Seeders\HolidaySeeder;
 use App\Modules\Leave\Database\Seeders\LeaveTypeSeeder;
 use App\Modules\Leave\Filament\Pages\LeaveBalances;
+use App\Modules\Leave\Filament\Portal\MyLeaveResource;
+use App\Modules\Leave\Filament\Widgets\MyLeaveBalances;
 use App\Modules\Leave\Filament\Resources\Holidays\HolidayResource;
 use App\Modules\Leave\Filament\Resources\LeaveTypes\LeaveTypeResource;
 use App\Modules\Leave\Filament\Resources\Leaves\LeaveResource;
@@ -24,17 +26,23 @@ class LeaveModule extends Module
 
     public function description(): string
     {
-        return 'Leave requests, leave types and entitlements, public holidays and leave balances.';
+        return 'Leave requests, leave types and entitlements, public holidays and leave balances; employees request their own leave in the portal.';
     }
 
     public function filament(string $panelId): array
     {
-        return $panelId === 'admin'
-            ? [
+        return match ($panelId) {
+            'admin' => [
                 'resources' => [LeaveResource::class, LeaveTypeResource::class, HolidayResource::class],
                 'pages' => [LeaveBalances::class],
-            ]
-            : [];
+            ],
+            // Employees request their own leave in the portal
+            'portal' => [
+                'resources' => [MyLeaveResource::class],
+                'widgets' => [MyLeaveBalances::class],
+            ],
+            default => [],
+        };
     }
 
     public function seeders(): array
