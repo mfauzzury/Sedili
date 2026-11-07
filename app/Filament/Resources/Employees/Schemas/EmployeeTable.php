@@ -14,7 +14,7 @@ class EmployeeTable
         return $table
             ->query(
                 Employee::query()
-                    ->with(['department'])
+                    ->with(['department.manager', 'supervisor'])
                     ->latest()
             )
             ->filters(
@@ -30,6 +30,10 @@ class EmployeeTable
                         ->label('Inactive Employees')
                         // ->toggle()
                         ->query(fn(Builder $query): Builder => $query->where('is_active', false))
+                        ->default(false),
+                    Filter::make('no_supervisor')
+                        ->label('No supervisor')
+                        ->query(fn(Builder $query): Builder => $query->withoutSupervisor())
                         ->default(false),
                     SelectFilter::make('department_id')
                         ->label('Department')
@@ -80,6 +84,14 @@ class EmployeeTable
                     ->label('Department')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('supervisor')
+                    ->label('Supervisor')
+                    ->getStateUsing(fn(Employee $record) => $record->effectiveSupervisor()?->name ?? 'No supervisor')
+                    ->description(fn(Employee $record) => $record->effectiveSupervisor() !== null && $record->effectiveSupervisor()->isNot($record->supervisor)
+                        ? 'Manager of the department'
+                        : null)
+                    ->color(fn(Employee $record) => $record->effectiveSupervisor() === null ? 'danger' : null)
+                    ->icon(fn(Employee $record) => $record->effectiveSupervisor() === null ? 'heroicon-o-exclamation-triangle' : null),
                 TextColumn::make('position.title')
                     ->label('Position')
                     ->searchable()

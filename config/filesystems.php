@@ -41,7 +41,8 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // Relative, so that the files load from the host the app is opened on (not only from APP_URL)
+            'url' => '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

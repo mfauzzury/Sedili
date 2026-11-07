@@ -19,7 +19,8 @@ class Leave extends Model
         'days',
         'status',
         'rejection_reason',
-        'notes'
+        'notes',
+        'attachment',
     ];
     protected $casts = [
         'leave_date' => 'datetime:H:i',

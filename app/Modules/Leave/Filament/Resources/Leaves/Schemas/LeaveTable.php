@@ -3,6 +3,7 @@ namespace App\Modules\Leave\Filament\Resources\Leaves\Schemas;
 
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Models\LeaveType;
+use App\Modules\Leave\Services\LeaveAttachment;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -56,6 +57,14 @@ class LeaveTable
                     })
                     ->label('Status')
                 ,
+                TextColumn::make('attachment')
+                    ->label('Evidence')
+                    ->state(fn(Leave $record) => $record->attachment
+                        ? 'View'
+                        : (LeaveType::requiresEvidence($record->leave_type) ? 'Missing' : '-'))
+                    ->color(fn(Leave $record) => $record->attachment ? 'primary' : (LeaveType::requiresEvidence($record->leave_type) ? 'danger' : null))
+                    ->url(fn(Leave $record) => LeaveAttachment::url($record))
+                    ->openUrlInNewTab(),
                 TextColumn::make('rejection_reason')
                     ->label('Rejection Reason')
                     ->default('N/A')

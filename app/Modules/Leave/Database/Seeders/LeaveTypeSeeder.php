@@ -16,6 +16,7 @@ class LeaveTypeSeeder extends Seeder
         $types = [
             [
                 'name' => 'Annual Leave',
+                'color' => '#2563eb',
                 'tiers' => [
                     ['min_years' => 0, 'days' => 8],
                     ['min_years' => 2, 'days' => 12],
@@ -24,26 +25,41 @@ class LeaveTypeSeeder extends Seeder
             ],
             [
                 'name' => 'Sick Leave',
+                'color' => '#dc2626',
+                'requires_attachment' => true,
                 'tiers' => [
                     ['min_years' => 0, 'days' => 14],
                     ['min_years' => 2, 'days' => 18],
                     ['min_years' => 5, 'days' => 22],
                 ],
             ],
-            ['name' => 'Hospitalisation Leave', 'days_per_year' => 60],
+            ['name' => 'Hospitalisation Leave', 'color' => '#9333ea', 'days_per_year' => 60, 'requires_attachment' => true],
             [
                 'name' => 'Maternity Leave',
+                'color' => '#db2777',
                 'days_per_year' => 98,
                 'gender_restriction' => 'Female',
                 'count_calendar_days' => true,
             ],
-            ['name' => 'Paternity Leave', 'days_per_year' => 7, 'gender_restriction' => 'Male'],
-            ['name' => 'Compassionate Leave', 'days_per_year' => 3],
-            ['name' => 'Unpaid Leave'],
+            ['name' => 'Paternity Leave', 'color' => '#0891b2', 'days_per_year' => 7, 'gender_restriction' => 'Male'],
+            ['name' => 'Compassionate Leave', 'color' => '#475569', 'days_per_year' => 3],
+            ['name' => 'Unpaid Leave', 'color' => '#d97706'],
         ];
 
         foreach ($types as $type) {
-            LeaveType::updateOrCreate(['name' => $type['name']], $type);
+            // The colour is only a default: never overwrite the one chosen by an admin
+            $color = $type['color'] ?? null;
+            unset($type['color']);
+            // Like the colour, the evidence is only a default for a new type: never overwrite the choice of an admin
+            $evidence = $type['requires_attachment'] ?? false;
+            unset($type['requires_attachment']);
+            $leaveType = LeaveType::updateOrCreate(['name' => $type['name']], $type);
+            if ($evidence && $leaveType->wasRecentlyCreated) {
+                $leaveType->update(['requires_attachment' => true]);
+            }
+            if ($color !== null && blank($leaveType->color)) {
+                $leaveType->update(['color' => $color]);
+            }
         }
     }
 }

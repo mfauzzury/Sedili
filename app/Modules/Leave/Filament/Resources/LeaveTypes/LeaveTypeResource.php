@@ -5,10 +5,10 @@ namespace App\Modules\Leave\Filament\Resources\LeaveTypes;
 use App\Modules\Leave\Filament\Resources\LeaveTypes\Pages\ListLeaveTypes;
 use App\Modules\Leave\Models\LeaveType;
 use Filament\Actions\{BulkActionGroup, DeleteAction, DeleteBulkAction, EditAction};
-use Filament\Forms\Components\{Repeater, Select, TextInput, Toggle};
+use Filament\Forms\Components\{ColorPicker, Repeater, Select, TextInput, Toggle};
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\{IconColumn, TextColumn};
+use Filament\Tables\Columns\{ColorColumn, IconColumn, TextColumn};
 use Filament\Tables\Table;
 
 class LeaveTypeResource extends Resource
@@ -27,6 +27,9 @@ class LeaveTypeResource extends Resource
                 ->required()
                 ->unique(ignoreRecord: true)
                 ->maxLength(255),
+            ColorPicker::make('color')
+                ->label('Calendar colour')
+                ->helperText('Colour of this leave type in the leave calendar.'),
             TextInput::make('days_per_year')
                 ->label('Days per year')
                 ->numeric()
@@ -49,6 +52,9 @@ class LeaveTypeResource extends Resource
             Toggle::make('count_calendar_days')
                 ->label('Count weekends and holidays')
                 ->helperText('For example maternity leave is counted in consecutive days.'),
+            Toggle::make('requires_attachment')
+                ->label('Evidence required')
+                ->helperText('The employee must attach a document, for example a medical certificate, to request this leave.'),
             Toggle::make('is_active')
                 ->label('Active')
                 ->default(true),
@@ -59,6 +65,7 @@ class LeaveTypeResource extends Resource
     {
         return $table
             ->columns([
+                ColorColumn::make('color')->label('Colour')->state(fn(LeaveType $record) => $record->displayColor()),
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('days_per_year')->label('Days per year')->default('No limit'),
                 TextColumn::make('tiers')
@@ -68,6 +75,7 @@ class LeaveTypeResource extends Resource
                         ->implode(' / ') ?: '-'),
                 TextColumn::make('gender_restriction')->label('Only for')->default('Everyone'),
                 IconColumn::make('count_calendar_days')->label('Calendar days')->boolean(),
+                IconColumn::make('requires_attachment')->label('Evidence required')->boolean(),
                 IconColumn::make('is_active')->label('Active')->boolean(),
             ])
             ->recordActions([
