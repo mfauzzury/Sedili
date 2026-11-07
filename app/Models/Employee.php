@@ -6,11 +6,13 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class Employee extends Authenticatable
+class Employee extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, HasRoles;
@@ -39,6 +41,21 @@ class Employee extends Authenticatable
     protected $appends = [
         'name',
     ];
+
+    /**
+     * Who may enter a panel. Without this method Filament only allows access in the local
+     * environment, so nobody could log in once deployed.
+     * - Inactive (terminated) employees cannot log in anywhere.
+     * - The admin panel is reserved to the admin role; the portal is open to every active employee.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // A missing value means the database default (active)
+        if (!(bool) ($this->attributes['is_active'] ?? true)) {
+            return false;
+        }
+        return $panel->getId() === 'admin' ? $this->hasRole('admin') : true;
+    }
 
     public function getNameAttribute(): string
     {

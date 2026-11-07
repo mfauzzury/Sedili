@@ -52,7 +52,8 @@ class EmployeeForm
                                 TextInput::make('email')
                                     ->email()
                                     ->required()
-                                    ->label('Email Address (this will be the default password for the user )')
+                                    ->label('Email Address')
+                                    ->helperText('The employee sets a password with "Forgot password" on the portal login page.')
                                     ->unique(ignoreRecord: true)
                                     ->copyable()
                                 ,

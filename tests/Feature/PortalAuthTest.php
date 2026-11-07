@@ -6,6 +6,7 @@ use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use App\Models\Employee;
+use Filament\Facades\Filament;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use Filament\Auth\Pages\Login;
@@ -21,6 +22,8 @@ class PortalAuthTest extends TestCase
     {
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
+        // The auth pages below belong to the employee portal, not to the default (admin) panel
+        Filament::setCurrentPanel('portal');
     }
     public function createEmployee()
     {

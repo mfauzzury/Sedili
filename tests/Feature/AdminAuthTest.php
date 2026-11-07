@@ -12,7 +12,6 @@ use Tests\TestCase;
 use Faker\Factory as Faker;
 use Livewire\Livewire;
 use App\Models\Employee;
-use App\Filament\Pages\Auth\Register;
 use Filament\Auth\Pages\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Event;
@@ -49,65 +48,16 @@ class AdminAuthTest extends TestCase
 
         $response->assertStatus(200);
     }
-    public function test_register_page_can_be_accessed()
+    public function test_admin_self_registration_is_disabled()
     {
-        $response = $this->get('/register');
-
-        $response->assertStatus(200);
+        // Anyone could register and became an admin: admins are created with "php artisan app:create-admin"
+        $this->get('/register')->assertNotFound();
     }
     public function test_reset_password_page_can_be_accessed()
     {
         $response = $this->get('/password-reset/request');
 
         $response->assertStatus(200);
-    }
-    public function test_user_can_register()
-    {
-
-        $faker = Faker::create();
-        $email = $faker->unique()->safeEmail();
-        Livewire::test(Register::class)
-            ->fillForm([
-                'first_name' => $faker->firstName(),
-                'last_name' => $faker->lastName(),
-                'employee_code' => 'EMP_123',
-                'phone' => $faker->phoneNumber(),
-                'email' => $email,
-                'password' => 'password123',
-                'passwordConfirmation' => 'password123',
-            ])
-            ->call('register')
-            ->assertHasNoFormErrors()
-            ->assertRedirect(filament()->getHomeUrl());
-        // ->assertRedirect('/');
-
-        $this->assertDatabaseHas('employees', [
-            'email' => $email,
-        ]);
-    }
-    public function test_user_cannot_register_with_wrong_details()
-    {
-
-        $faker = Faker::create();
-        $email = $faker->unique()->safeEmail();
-        Livewire::test(Register::class)
-            ->fillForm([
-                'first_name' => $faker->firstName(),
-                'last_name' => $faker->lastName(),
-                'employee_code' => 'EMP_123',
-                'phone' => $faker->phoneNumber(),
-                'email' => $email,
-                'password' => 'password123',
-                'passwordConfirmation' => 'password',
-            ])
-            ->call('register')
-            ->assertHasFormErrors()
-            ->assertNoRedirect();
-        // ->assertRedirect('/');
-
-        $this->assertDatabaseMissing('employees', [
-            'email' => $email,
-        ]);
     }
     public function test_user_can_login()
     {

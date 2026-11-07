@@ -10,6 +10,7 @@ use App\Modules\Inbox\Filament\Resources\Messages\Pages\ViewMessage;
 use App\Models\{User, Employee};
 use App\Modules\Inbox\Models\Message;
 use App\Modules\Inbox\Models\Topic;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -53,6 +54,19 @@ class MessageResource extends Resource
     }
 
 
+
+    /**
+     * A user only sees the conversations they started or received, everywhere: list, view page
+     * (the {record} of the URL is resolved with this query) and actions.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $userId = Auth::id();
+
+        return parent::getEloquentQuery()->where(function (Builder $query) use ($userId) {
+            $query->where('creator_id', $userId)->orWhere('receiver_id', $userId);
+        });
+    }
 
     public static function getPages(): array
     {

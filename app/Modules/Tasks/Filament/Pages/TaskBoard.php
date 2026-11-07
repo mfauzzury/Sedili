@@ -4,6 +4,7 @@ namespace App\Modules\Tasks\Filament\Pages;
 
 use App\Modules\Tasks\Models\Task;
 
+use Filament\Facades\Filament;
 use Filament\Schemas\Components\Grid;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Database\Eloquent\Builder;
@@ -146,7 +147,7 @@ class TaskBoard extends BoardPage
                 //     return $data;
                 // })
                 ,
-                DeleteAction::make()->model(Task::class),
+                DeleteAction::make()->model(Task::class)->visible(fn() => $this->isAdminPanel()),
             ])->cardAction('view')
             ->columns([
                 Column::make('todo')->label('To Do')->color('gray'),
@@ -210,8 +211,21 @@ class TaskBoard extends BoardPage
 
     }
 
+    /**
+     * Admins manage every task; in the employee portal a user only sees the tasks assigned to them.
+     * The board resolves cards (moves and actions) with this query, so it also protects them.
+     */
     public function getEloquentQuery(): Builder
     {
-        return Task::query()->with('assignee');
+        $query = Task::query()->with('assignee');
+        if (!$this->isAdminPanel()) {
+            $query->where('assignee_id', auth()->id());
+        }
+        return $query;
+    }
+
+    public function isAdminPanel(): bool
+    {
+        return Filament::getCurrentPanel()?->getId() === 'admin';
     }
 }

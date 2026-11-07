@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class EmployeeObserver
 {
@@ -12,8 +13,10 @@ class EmployeeObserver
      */
     public function creating(Employee $employee): void
     {
+        // No password given: set a random one. The employee chooses a password with
+        // "Forgot password" on the login page (never derive it from public data like the email).
         if (empty($employee->password)) {
-            $employee->password = Hash::make($employee->email);
+            $employee->password = Hash::make(Str::password(32));
         }
     }
     public function created(Employee $employee): void

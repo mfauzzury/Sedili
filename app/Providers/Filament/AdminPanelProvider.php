@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Auth\Register;
 use Filament\Pages\Dashboard;
 use App\Modules\ModuleManager;
 use App\Filament\Resources\Departments\Widgets\StatsOverview;
@@ -38,7 +37,6 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->login()
 
-            ->registration(Register::class)
             ->databaseNotifications()
             ->authPasswordBroker('employees')
             ->brandName(
