@@ -85,7 +85,7 @@ class LeaveCalendarTest extends TestCase
         $this->actingAs($user->fresh());
     }
 
-    public function test_the_admin_sees_approved_and_pending_leave_with_the_leave_type(): void
+    public function test_the_admin_sees_approved_and_pending_leave_with_the_name_only(): void
     {
         $this->leave($this->alice, '2026-11-10', '2026-11-11', 'Approved', 'Sick Leave');
         $this->leave($this->bob, '2026-11-16', '2026-11-18', 'Pending');
@@ -93,7 +93,7 @@ class LeaveCalendarTest extends TestCase
         $this->as($this->admin, 'admin');
 
         $this->assertSame(
-            ['Alice Test - Sick Leave', 'Bob Test - Annual Leave (pending)'],
+            ['Alice Test', 'Bob Test (pending)'],
             $this->titles(Livewire::test(LeaveCalendarWidget::class))
         );
     }
@@ -109,14 +109,14 @@ class LeaveCalendarTest extends TestCase
         $this->assertSame(['Bob Test'], $titles); // no leave type, and the pending request stays private
     }
 
-    public function test_an_employee_sees_their_own_leave_in_full_pending_included(): void
+    public function test_an_employee_sees_their_own_leave_pending_included(): void
     {
         $this->leave($this->alice, '2026-11-10', '2026-11-11', 'Approved', 'Sick Leave');
         $this->leave($this->alice, '2026-11-16', '2026-11-18', 'Pending');
         $this->as($this->alice, 'portal');
 
         $this->assertSame(
-            ['Me - Annual Leave (pending)', 'Me - Sick Leave'],
+            ['Me', 'Me (pending)'],
             $this->titles(Livewire::test(LeaveCalendarWidget::class))
         );
     }
@@ -164,10 +164,10 @@ class LeaveCalendarTest extends TestCase
         $this->assertCount(2, $this->titles($calendar));
 
         $calendar->set('departmentId', $this->alice->department_id);
-        $this->assertSame(['Alice Test - Sick Leave'], $this->titles($calendar));
+        $this->assertSame(['Alice Test'], $this->titles($calendar));
 
         $calendar->set('departmentId', null)->set('leaveType', 'Annual Leave');
-        $this->assertSame(['Bob Test - Annual Leave'], $this->titles($calendar));
+        $this->assertSame(['Bob Test'], $this->titles($calendar));
     }
 
     /**
@@ -193,9 +193,9 @@ class LeaveCalendarTest extends TestCase
 
         $colors = $this->colors(Livewire::test(LeaveCalendarWidget::class));
 
-        $this->assertSame('#dc2626', $colors['Alice Test - Sick Leave']);
+        $this->assertSame('#dc2626', $colors['Alice Test']);
         // Approved or pending: the colour is the one of the type
-        $this->assertSame('#123456', $colors['Bob Test - Annual Leave (pending)']);
+        $this->assertSame('#123456', $colors['Bob Test (pending)']);
     }
 
     public function test_an_employee_cannot_tell_the_leave_type_of_a_colleague_from_the_colour(): void
@@ -207,8 +207,8 @@ class LeaveCalendarTest extends TestCase
         $colors = $this->colors(Livewire::test(LeaveCalendarWidget::class));
 
         $this->assertSame(LeaveCalendarWidget::COLLEAGUE_COLOR, $colors['Bob Test']);
-        $this->assertNotSame($colors['Bob Test'], $colors['Me - Sick Leave']);
-        $this->assertSame('#dc2626', $colors['Me - Sick Leave']);
+        $this->assertNotSame($colors['Bob Test'], $colors['Me']);
+        $this->assertSame('#dc2626', $colors['Me']);
     }
 
     public function test_a_leave_type_without_colour_gets_a_fallback_colour(): void

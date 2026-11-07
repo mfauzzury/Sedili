@@ -136,11 +136,8 @@ class LeaveCalendarWidget extends CalendarWidget
                 $own = (int) $leave->employee_id === $me;
                 $name = $leave->employee?->name ?? 'Unknown';
 
-                $title = match (true) {
-                    $isAdmin => "{$name} - {$leave->leave_type}",
-                    $own => "Me - {$leave->leave_type}",
-                    default => $name, // colleagues: no leave type
-                };
+                // Just the name: the leave type is told by the colour (see the legend)
+                $title = ($own && !$isAdmin) ? 'Me' : $name;
                 if ($leave->status === 'Pending') {
                     $title .= ' (pending)';
                 }
