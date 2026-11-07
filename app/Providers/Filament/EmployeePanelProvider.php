@@ -37,6 +37,7 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->databaseNotifications()
             ->viteTheme('resources/css/filament/admin/theme.css')
+            ->sidebarWidth('16rem')
             ->spa()
             ->login()
             ->passwordReset()
