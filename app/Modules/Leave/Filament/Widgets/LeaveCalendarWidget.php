@@ -37,6 +37,11 @@ class LeaveCalendarWidget extends CalendarWidget
     protected bool $eventResizeEnabled = false;
     protected bool $dateSelectEnabled = false;
 
+    // A busy day shows as many events as the cell can hold and a "+N more" link instead of
+    // stretching the whole week. "Fit the cell" needs a fixed height: the weeks share it.
+    protected bool $dayMaxEvents = true;
+    protected array $options = ['height' => '760px'];
+
     public ?int $departmentId = null;
     public ?string $leaveType = null;
 
