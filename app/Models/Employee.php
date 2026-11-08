@@ -11,12 +11,15 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Concerns\Audited;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles, Audited;
 
     /**
      * The attributes that are mass assignable.
@@ -64,7 +67,8 @@ class Employee extends Authenticatable implements FilamentUser
     }
 
 
-    public function department()
+    /** @return BelongsTo<Department, $this> */
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
@@ -72,12 +76,14 @@ class Employee extends Authenticatable implements FilamentUser
     /**
      * The supervisor chosen for this employee (see effectiveSupervisor()).
      */
-    public function supervisor()
+    /** @return BelongsTo<Employee, $this> */
+    public function supervisor(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'supervisor_id');
     }
 
-    public function subordinates()
+    /** @return HasMany<Employee, $this> */
+    public function subordinates(): HasMany
     {
         return $this->hasMany(Employee::class, 'supervisor_id');
     }

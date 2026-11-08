@@ -2,12 +2,16 @@
 
 namespace App\Modules\Leave\Models;
 
+use App\Models\Concerns\Audited;
 use App\Models\Employee;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Leave extends Model
 {
+    use Audited;
+
     //
     protected $table = 'leave';
     protected $fillable = [
@@ -60,7 +64,8 @@ class Leave extends Model
     }
 
 
-    public function employee()
+    /** @return BelongsTo<Employee, $this> */
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }

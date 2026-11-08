@@ -7,6 +7,7 @@ use App\Modules\Tasks\Filament\Pages\TaskBoard;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Task extends Model
 {
     //
@@ -33,7 +34,8 @@ class Task extends Model
     protected $table = 'tasks';
     protected $appends = ['date', 'email'];
 
-    public function assignee()
+    /** @return BelongsTo<Employee, $this> */
+    public function assignee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'assignee_id');
     }

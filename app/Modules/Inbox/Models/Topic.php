@@ -5,6 +5,8 @@ namespace App\Modules\Inbox\Models;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Topic extends Model
 {
@@ -21,12 +23,14 @@ class Topic extends Model
     ];
 
 
-    public function message()
+    /** @return HasMany<Message, $this> */
+    public function message(): HasMany
     {
         return $this->hasMany(Message::class);
     }
 
-    public function creator()
+    /** @return BelongsTo<Employee, $this> */
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'creator_id');
     }

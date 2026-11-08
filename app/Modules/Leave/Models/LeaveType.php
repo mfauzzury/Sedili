@@ -2,10 +2,13 @@
 
 namespace App\Modules\Leave\Models;
 
+use App\Models\Concerns\Audited;
 use Illuminate\Database\Eloquent\Model;
 
 class LeaveType extends Model
 {
+    use Audited;
+
     protected $fillable = [
         'name',
         'color',

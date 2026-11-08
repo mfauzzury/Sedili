@@ -7,11 +7,13 @@ use App\Modules\Attendance\Database\Factories\AttendanceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Employee;
+use App\Models\Concerns\Audited;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attendance extends Model
 {
     //
-    use HasFactory;
+    use HasFactory, Audited;
 
     protected static function newFactory(): AttendanceFactory
     {
@@ -40,11 +42,13 @@ class Attendance extends Model
         'shift_name',
         'hours'
     ];
-    public function employee()
+    /** @return BelongsTo<Employee, $this> */
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
-    public function shift()
+    /** @return BelongsTo<Shift, $this> */
+    public function shift(): BelongsTo
     {
         return $this->belongsTo(Shift::class, 'shift_id');
     }

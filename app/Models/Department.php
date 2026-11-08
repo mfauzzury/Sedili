@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Audited;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Department extends Model
 {
+    use Audited;
+
     //
     protected $fillable = [
         'name',
@@ -18,11 +23,13 @@ class Department extends Model
         'manager_id' => 'integer',
     ];
 
-    public function manager()
+    /** @return BelongsTo<Employee, $this> */
+    public function manager(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'manager_id');
     }
-    public function employees()
+    /** @return HasMany<Employee, $this> */
+    public function employees(): HasMany
     {
         return $this->hasMany(Employee::class, 'department_id');
     }

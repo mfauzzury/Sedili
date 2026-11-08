@@ -3,6 +3,7 @@
 namespace App\Modules\Inbox\Models;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
@@ -24,18 +25,21 @@ class Message extends Model
         'receiver_id' => 'integer'
     ];
     protected $with = ['sender'];
-    public function sender()
+    /** @return BelongsTo<Employee, $this> */
+    public function sender(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'sender_id');
     }
 
 
-    public function topic()
+    /** @return BelongsTo<Topic, $this> */
+    public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);
     }
 
-    public function receiver()
+    /** @return BelongsTo<Employee, $this> */
+    public function receiver(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'receiver_id');
     }
