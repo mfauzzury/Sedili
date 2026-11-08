@@ -26,16 +26,17 @@ class SupervisorTest extends TestCase
 
     private function employee(string $name, array $attributes = [], string $role = 'employee'): Employee
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => $name,
             'last_name' => 'Test',
-            'email' => strtolower($name) . '@example.com',
+            'email' => strtolower($name).'@example.com',
             'password' => 'password',
             'employment_type' => 'Permanent',
             ...$attributes,
         ])->save();
         $employee->assignRole($role);
+
         return $employee;
     }
 
@@ -52,6 +53,7 @@ class SupervisorTest extends TestCase
     {
         $admin = $this->employee('Admin', role: 'admin');
         $this->actingAs($admin->fresh());
+
         return $admin;
     }
 
@@ -185,8 +187,8 @@ class SupervisorTest extends TestCase
         $this->employee('Gone', ['is_active' => false]);
 
         $stats = Livewire::test(StatsOverview::class)->instance();
-        $stat = collect((fn() => $this->getStats())->call($stats))
-            ->first(fn($stat) => $stat->getLabel() === 'Without supervisor');
+        $stat = collect((fn () => $this->getStats())->call($stats))
+            ->first(fn ($stat) => $stat->getLabel() === 'Without supervisor');
 
         // Only Boss: not the admin, not WithBoss, not the inactive one
         $this->assertSame(1, $stat->getValue());

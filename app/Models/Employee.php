@@ -174,6 +174,10 @@ class Employee extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'date_of_birth' => 'date',
+            'hire_date' => 'date',
+            'termination_date' => 'date',
         ];
     }
 }

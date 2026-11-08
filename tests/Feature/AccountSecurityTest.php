@@ -14,7 +14,7 @@ class AccountSecurityTest extends TestCase
 
     public function test_an_employee_created_without_password_does_not_get_the_email_as_password(): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Siti',
             'last_name' => 'Aminah',
@@ -52,7 +52,7 @@ class AccountSecurityTest extends TestCase
 
     private function employee(string $email, bool $active = true): Employee
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Test',
             'last_name' => 'User',
@@ -61,6 +61,7 @@ class AccountSecurityTest extends TestCase
             'employment_type' => 'Permanent',
             'is_active' => $active,
         ])->save();
+
         return $employee;
     }
 

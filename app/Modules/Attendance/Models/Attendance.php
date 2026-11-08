@@ -61,6 +61,10 @@ class Attendance extends Model
         if ($this->clock_in && $this->clock_out) {
             $start = Carbon::parse($this->clock_in);
             $end = Carbon::parse($this->clock_out);
+            // A night shift: the clock out is on the next day
+            if ($this->shift?->isOvernight() && $end->lt($start)) {
+                $end->addDay();
+            }
             // diffInMinutes already contains the hours and the remaining minutes
             return round($start->diffInMinutes($end, false) / 60, 2);
         }

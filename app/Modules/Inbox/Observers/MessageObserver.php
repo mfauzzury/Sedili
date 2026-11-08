@@ -17,8 +17,13 @@ class MessageObserver
     {
         //
         $topic = $message->topic;
-        $recipient = Employee::find($topic->receiver_id);
+        // The receiver of this message: for a reply it is the one who wrote first, not the receiver of
+        // the topic. Older messages have none, so the topic tells.
+        $recipient = Employee::find($message->receiver_id ?? $topic->receiver_id);
         $sender = Employee::find($message->sender_id);
+        if ($recipient === null || $sender === null || $recipient->is($sender)) {
+            return;
+        }
 
         $url = MessageResource::getUrl('view', ['record' => $topic]);
 

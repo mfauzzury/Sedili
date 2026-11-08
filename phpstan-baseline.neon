@@ -87,13 +87,13 @@ parameters:
 		-
 			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$end_time\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: app/Modules/Attendance/Models/Shift.php
 
 		-
 			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$start_time\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: app/Modules/Attendance/Models/Shift.php
 
 		-
@@ -137,6 +137,18 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$end_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Tests/CalendarEventsTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$start_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Tests/CalendarEventsTest.php
 
 		-
 			message: '#^Negated boolean expression is always false\.$#'

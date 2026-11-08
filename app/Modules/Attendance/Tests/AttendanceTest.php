@@ -3,6 +3,7 @@
 namespace App\Modules\Attendance\Tests;
 
 use App\Models\Employee;
+use App\Modules\Attendance\Filament\Resources\Attendances\Pages\CreateAttendance;
 use App\Modules\Attendance\Filament\Resources\Attendances\Pages\ListAttendances;
 use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Attendance\Models\Shift;
@@ -79,5 +80,113 @@ class AttendanceTest extends TestCase
         $record = $this->attendance('09:00', '17:00');
 
         Livewire::test(ListAttendances::class)->assertCanSeeTableRecords([$record]);
+    }
+    private function loginAsAdminOfTheAdminPanel(): void
+    {
+        $admin = new Employee();
+        $admin->forceFill([
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'email' => 'admin@example.com',
+            'password' => 'password',
+            'employment_type' => 'Permanent',
+        ])->save();
+        $admin->assignRole('admin');
+        Filament::setCurrentPanel('admin');
+        $this->actingAs($admin->fresh());
+    }
+
+    private function colleague(): Employee
+    {
+        $colleague = new Employee();
+        $colleague->forceFill([
+            'first_name' => 'Ali',
+            'last_name' => 'Hassan',
+            'email' => 'ali@example.com',
+            'password' => 'password',
+            'employment_type' => 'Permanent',
+        ])->save();
+
+        return $colleague;
+    }
+
+    public function test_two_employees_can_both_have_attendance_on_the_same_day(): void
+    {
+        $this->loginAsAdminOfTheAdminPanel();
+        $this->attendance('09:00', '18:00', '2026-03-02');
+
+        Livewire::test(CreateAttendance::class)
+            ->fillForm([
+                'employee_id' => $this->colleague()->id,
+                'shift_id' => $this->shift->id,
+                'date' => '2026-03-02',
+                'clock_in' => '09:05',
+                'clock_out' => '18:00',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(2, Attendance::whereDate('date', '2026-03-02')->count());
+    }
+
+    public function test_the_same_employee_cannot_have_two_records_for_the_same_day_and_shift(): void
+    {
+        $this->loginAsAdminOfTheAdminPanel();
+        $this->attendance('09:00', '18:00', '2026-03-02');
+
+        Livewire::test(CreateAttendance::class)
+            ->fillForm([
+                'employee_id' => $this->employee->id,
+                'shift_id' => $this->shift->id,
+                'date' => '2026-03-02',
+                'clock_in' => '09:30',
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['date' => 'unique']);
+    }
+
+    public function test_clocking_out_before_clocking_in_is_refused(): void
+    {
+        $this->loginAsAdminOfTheAdminPanel();
+
+        Livewire::test(CreateAttendance::class)
+            ->fillForm([
+                'employee_id' => $this->employee->id,
+                'shift_id' => $this->shift->id,
+                'date' => '2026-03-03',
+                'clock_in' => '18:00',
+                'clock_out' => '09:00',
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['clock_out']);
+    }
+
+    public function test_the_duration_of_a_shift_counts_the_night(): void
+    {
+        $night = Shift::create(['name' => 'Night', 'start_time' => '22:00', 'end_time' => '06:00']);
+
+        $this->assertTrue($night->isOvernight());
+        $this->assertFalse($this->shift->isOvernight());
+        $this->assertEquals(480, $night->duration);
+        $this->assertEquals(540, $this->shift->duration);
+    }
+
+    public function test_a_night_shift_may_end_after_midnight(): void
+    {
+        $this->loginAsAdminOfTheAdminPanel();
+        $night = Shift::create(['name' => 'Night', 'start_time' => '22:00', 'end_time' => '06:00']);
+
+        Livewire::test(CreateAttendance::class)
+            ->fillForm([
+                'employee_id' => $this->employee->id,
+                'shift_id' => $night->id,
+                'date' => '2026-03-03',
+                'clock_in' => '22:00',
+                'clock_out' => '06:00',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(8.0, Attendance::where('shift_id', $night->id)->firstOrFail()->hours);
     }
 }

@@ -23,10 +23,21 @@ class Shift extends Model
     protected $appends = [
         'duration',
     ];
+    /**
+     * A night shift ends on the next day (22:00 to 06:00).
+     */
+    public function isOvernight(): bool
+    {
+        return Carbon::parse($this->end_time)->format('H:i') < Carbon::parse($this->start_time)->format('H:i');
+    }
+
     public function getDurationAttribute()
     {
         $start = Carbon::parse($this->start_time);
         $end = Carbon::parse($this->end_time);
+        if ($this->isOvernight()) {
+            $end->addDay();
+        }
         return $start->diffInMinutes($end);
     }
 }

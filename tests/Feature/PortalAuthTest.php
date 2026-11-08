@@ -1,19 +1,23 @@
 <?php
+
 namespace Tests\Feature;
+
+use App\Models\Employee;
 use Auth;
 use Database\Seeders\DatabaseSeeder;
 use Faker\Factory as Faker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
-use App\Models\Employee;
-use Filament\Facades\Filament;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Hash;
 use Filament\Auth\Pages\Login;
-use Filament\Auth\Pages\PasswordReset\{RequestPasswordReset, ResetPassword};
-use Illuminate\Auth\Passwords\PasswordBroker;
+use Filament\Auth\Pages\PasswordReset\RequestPasswordReset;
+use Filament\Auth\Pages\PasswordReset\ResetPassword;
+use Filament\Facades\Filament;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Auth\Passwords\PasswordBroker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
+use Tests\TestCase;
+
 class PortalAuthTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,6 +29,7 @@ class PortalAuthTest extends TestCase
         // The auth pages below belong to the employee portal, not to the default (admin) panel
         Filament::setCurrentPanel('portal');
     }
+
     public function createEmployee()
     {
         $faker = Faker::create();
@@ -36,26 +41,31 @@ class PortalAuthTest extends TestCase
             'password' => $password,
         ]);
         $employee->assignRole('employee');
+
         return $employee;
     }
+
     public function test_login_page_can_be_accessed()
     {
         $response = $this->get('/portal/login');
 
         $response->assertStatus(200);
     }
+
     public function test_reset_password_page_can_be_accessed()
     {
         $response = $this->get('/portal/password-reset/request');
 
         $response->assertStatus(200);
     }
+
     public function test_user_cannot_access_register_page()
     {
         $response = $this->get('/portal/register');
 
         $response->assertStatus(404);
     }
+
     public function test_user_can_login()
     {
 
@@ -69,10 +79,9 @@ class PortalAuthTest extends TestCase
             ->call('authenticate')
             ->assertHasNoFormErrors();
 
-
-
         $this->assertEquals(Auth::id(), $employee->id);
     }
+
     public function test_unregistered_user_cannot_login()
     {
 
@@ -85,9 +94,9 @@ class PortalAuthTest extends TestCase
             ])
             ->call('authenticate')
             ->assertHasFormErrors()
-            ->assertNoRedirect()
-        ;
+            ->assertNoRedirect();
     }
+
     public function test_user_cannot_login_with_wrong_details()
     {
 
@@ -100,9 +109,9 @@ class PortalAuthTest extends TestCase
             ])
             ->call('authenticate')
             ->assertHasFormErrors()
-            ->assertNoRedirect()
-        ;
+            ->assertNoRedirect();
     }
+
     public function test_user_can_request_password_reset()
     {
 
@@ -115,6 +124,7 @@ class PortalAuthTest extends TestCase
             ->call('request')
             ->assertHasNoFormErrors();
     }
+
     public function test_user_can_reset_password()
     {
 
@@ -132,6 +142,7 @@ class PortalAuthTest extends TestCase
         $this->assertTrue(Hash::check('newpassword123', $employee->fresh()->password));
 
     }
+
     public function test_user_can_logout()
     {
         Event::fake();
@@ -140,7 +151,6 @@ class PortalAuthTest extends TestCase
         Event::assertDispatched(Logout::class, function ($event) use ($employee) {
             return $event->user->id === $employee->id && $event->guard === 'web';
         });
-
 
     }
 }

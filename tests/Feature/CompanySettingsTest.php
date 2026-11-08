@@ -27,7 +27,7 @@ class CompanySettingsTest extends TestCase
 
     private function actingAsEmployee(string $role): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Test',
             'last_name' => ucfirst($role),
@@ -70,10 +70,10 @@ class CompanySettingsTest extends TestCase
         $this->assertSame('Sedili Sdn Bhd', Filament::getPanel('admin')->getBrandName());
         $this->assertSame('Sedili Sdn Bhd', Filament::getPanel('portal')->getBrandName());
         $this->assertSame($profile->logoUrl(), Filament::getPanel('portal')->getBrandLogo());
-        $this->assertStringEndsWith('/storage/' . $profile->get('logo'), $profile->logoUrl());
+        $this->assertStringEndsWith('/storage/'.$profile->get('logo'), $profile->logoUrl());
 
         // The logo is loaded from the host the page is opened on, whatever APP_URL says
-        $this->get('http://sedili.test:8000/')->assertOk()->assertSee('http://sedili.test:8000/storage/' . $profile->get('logo'), false);
+        $this->get('http://sedili.test:8000/')->assertOk()->assertSee('http://sedili.test:8000/storage/'.$profile->get('logo'), false);
     }
 
     public function test_the_files_of_the_public_disk_have_a_url_that_works_on_any_host(): void
@@ -81,7 +81,7 @@ class CompanySettingsTest extends TestCase
         // The upload field gives this URL to the browser to load the saved logo and read its size. It must
         // not contain APP_URL: opened on another host or port, the browser would never get the file and
         // the field would stay on "Waiting for size" (the fake disk of these tests does not use this config).
-        $disk = Storage::build(config('filesystems.disks.' . CompanyProfile::DISK));
+        $disk = Storage::build(config('filesystems.disks.'.CompanyProfile::DISK));
 
         $this->assertSame('/storage/branding/logo.png', $disk->url('branding/logo.png'));
     }

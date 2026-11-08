@@ -1,26 +1,26 @@
 <?php
 
 namespace Tests\Feature;
+
+use App\Models\Employee;
 use Auth;
 use Database\Seeders\DatabaseSeeder;
+use Faker\Factory as Faker;
+use Filament\Auth\Pages\Login;
 use Filament\Auth\Pages\PasswordReset\RequestPasswordReset;
 use Filament\Auth\Pages\PasswordReset\ResetPassword;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Tests\TestCase;
-use Faker\Factory as Faker;
-use Livewire\Livewire;
-use App\Models\Employee;
-use Filament\Auth\Pages\Login;
-use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Event;
-
-
+use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class AdminAuthTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * Check the login page loads successfully.
      */
@@ -29,6 +29,7 @@ class AdminAuthTest extends TestCase
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
     }
+
     public function createEmployee()
     {
         $faker = Faker::create();
@@ -40,25 +41,30 @@ class AdminAuthTest extends TestCase
             'password' => $password,
         ]);
         $employee->assignRole('admin');
+
         return $employee;
     }
+
     public function test_login_page_can_be_accessed()
     {
         $response = $this->get('/login');
 
         $response->assertStatus(200);
     }
+
     public function test_admin_self_registration_is_disabled()
     {
         // Anyone could register and became an admin: admins are created with "php artisan app:create-admin"
         $this->get('/register')->assertNotFound();
     }
+
     public function test_reset_password_page_can_be_accessed()
     {
         $response = $this->get('/password-reset/request');
 
         $response->assertStatus(200);
     }
+
     public function test_user_can_login()
     {
 
@@ -72,10 +78,9 @@ class AdminAuthTest extends TestCase
             ->call('authenticate')
             ->assertHasNoFormErrors();
 
-
-
         $this->assertEquals(Auth::id(), $employee->id);
     }
+
     public function test_unregistered_user_cannot_login()
     {
 
@@ -88,9 +93,9 @@ class AdminAuthTest extends TestCase
             ])
             ->call('authenticate')
             ->assertHasFormErrors()
-            ->assertNoRedirect()
-        ;
+            ->assertNoRedirect();
     }
+
     public function test_user_cannot_login_with_wrong_details()
     {
 
@@ -103,8 +108,7 @@ class AdminAuthTest extends TestCase
             ])
             ->call('authenticate')
             ->assertHasFormErrors()
-            ->assertNoRedirect()
-        ;
+            ->assertNoRedirect();
     }
 
     public function test_user_can_request_password_reset()
@@ -137,6 +141,7 @@ class AdminAuthTest extends TestCase
         $this->assertTrue(Hash::check('newpassword123', $employee->fresh()->password));
 
     }
+
     public function test_user_can_logout()
     {
         Event::fake();
@@ -146,8 +151,5 @@ class AdminAuthTest extends TestCase
             return $event->user->id === $employee->id && $event->guard === 'web';
         });
 
-
     }
-
-
 }

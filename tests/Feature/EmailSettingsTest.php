@@ -28,7 +28,7 @@ class EmailSettingsTest extends TestCase
 
     private function actingAsEmployee(string $role): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Test',
             'last_name' => ucfirst($role),
@@ -148,7 +148,7 @@ class EmailSettingsTest extends TestCase
         $this->assertStringContainsString('Test Admin requested leave', $html);
         $this->assertStringContainsString('Family trip', $html);
         $this->assertStringContainsString('/storage/branding/logo.png', $html);
-        $this->assertStringContainsString(date('Y') . ' Sedili Sdn Bhd', html_entity_decode($html));
+        $this->assertStringContainsString(date('Y').' Sedili Sdn Bhd', html_entity_decode($html));
         // Header, sign-off and footer use the company, never the app name
         $this->assertStringNotContainsString('Laravel', $html);
         $this->assertMatchesRegularExpression('/Regards,\s*<br\s*\/?>\s*Sedili Sdn Bhd/', $html);

@@ -54,6 +54,20 @@ class ActivityLogTest extends TestCase
         $this->assertSame(['first_name' => 'Test'], $log->properties['old']);
     }
 
+    public function test_dates_and_flags_are_logged_as_plain_values(): void
+    {
+        $this->actingAs($this->makeEmployee('admin'));
+        $employee = $this->makeEmployee('employee');
+
+        $employee->update(['hire_date' => '2024-03-05', 'is_active' => false]);
+
+        $log = Activity::where('log_name', 'Employee')->where('event', 'updated')->latest('id')->firstOrFail();
+        $this->assertSame('2024-03-05', $log->properties['attributes']['hire_date']);
+        $this->assertNull($log->properties['old']['hire_date']);
+        $this->assertFalse((bool) $log->properties['attributes']['is_active']);
+        $this->assertArrayNotHasKey('updated_at', $log->properties['attributes']);
+    }
+
     public function test_passwords_are_never_written_to_the_log(): void
     {
         $admin = $this->makeEmployee('admin');

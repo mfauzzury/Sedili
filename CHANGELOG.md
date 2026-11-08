@@ -21,6 +21,11 @@
 - Departments: the list showed "No Manager" for every department; it now shows the manager, and can be searched and sorted by manager name
 - Departments: the manager is told only when they are assigned (a new manager was never told, the previous one was told again, and every edit sent a notification)
 - Dashboard: the employee counts included the admins, so they did not match the Employees list they link to
+- Calendar: an event that starts before or ends after the displayed month (or week) was not shown
+- Attendance: only one employee of the whole company could have a record for a given date; it is now one per employee, day and shift. Clocking out before clocking in is refused, and night shifts (22:00 to 06:00) are accepted and counted correctly
+- Task board: moving a card no longer notifies the assignees of the cards around it; only a change of title, description, status or due date does, and a reassigned task tells the new assignee
+- Inbox: a reply notified the person who replied instead of the one who wrote first
+- Employees: `is_active` and the dates are cast; the audit log stores dates as dates
 
 ## [v1.1.0] - 2026-01-05
 
