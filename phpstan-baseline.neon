@@ -25,12 +25,6 @@ parameters:
 			path: app/Filament/Resources/Admins/Pages/CreateAdmin.php
 
 		-
-			message: '#^Using nullsafe property access "\?\-\>full_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: app/Filament/Resources/Departments/Schemas/DepartmentTable.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:role\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -689,12 +683,6 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: app/Modules/Tasks/Observers/TaskObserver.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: app/Observers/DepartmentObserver.php
 
 		-
 			message: '#^PHPDoc tag @extends has invalid type App\\Models\\User\.$#'

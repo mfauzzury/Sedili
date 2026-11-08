@@ -13,11 +13,8 @@ class CreateEmployee extends CreateRecord
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['password'] = $data['email'];
-        return $data;
-    }
+    // No password is set here: EmployeeObserver gives a random one, and the employee chooses theirs
+    // with "Forgot password" on the login page. It is never derived from the email.
     protected function afterCreate(): void
     {
         $this->record->assignRole('employee');

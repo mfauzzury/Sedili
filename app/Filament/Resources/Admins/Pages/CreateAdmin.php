@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Admins\Pages;
 use App\Filament\Resources\Admins\AdminResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Hash;
 
 class CreateAdmin extends CreateRecord
 {
@@ -14,11 +13,8 @@ class CreateAdmin extends CreateRecord
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['password'] = Hash::make($data['email']);
-        return $data;
-    }
+    // No password is set here: EmployeeObserver gives a random one, and the admin chooses theirs
+    // with "Forgot password" on the login page. It is never derived from the email.
     protected function afterCreate(): void
     {
         $this->record->assignRole('admin');

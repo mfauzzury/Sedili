@@ -3,9 +3,9 @@
 namespace App\Observers;
 
 use App\Models\Department;
+use App\Models\Employee;
 use Filament\Notifications\Notification;
-use Filament\Actions\Action;
-use App\Filament\Resources\Departments\DepartmentResource;
+
 class DepartmentObserver
 {
     /**
@@ -22,22 +22,31 @@ class DepartmentObserver
      */
     public function updated(Department $department): void
     {
-        //
-        $this->sendManagerNotification($department);
+        // Only a new manager is told, not every edit of the name or the description
+        if ($department->wasChanged('manager_id')) {
+            $this->sendManagerNotification($department);
+        }
     }
+
     private function sendManagerNotification(Department $department): void
     {
-        if (!$department->manager) {
+        if (blank($department->manager_id)) {
             return;
         }
-        if ($department->manager) {
-            Notification::make()
-                ->title('You have been assigned a department')
-                ->body($department->name)
-                ->info()
-                ->sendToDatabase($department->manager);
+
+        // Asked to the database: the "manager" relation may still hold the previous manager
+        $manager = Employee::find($department->manager_id);
+        if ($manager === null) {
+            return;
         }
+
+        Notification::make()
+            ->title('You have been assigned a department')
+            ->body($department->name)
+            ->info()
+            ->sendToDatabase($manager);
     }
+
     /**
      * Handle the Department "deleted" event.
      */

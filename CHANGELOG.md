@@ -15,6 +15,13 @@
 - Leave types: "Evidence required" option; the employee must attach a document (e.g. a medical certificate, PDF/JPG/PNG) to request it. Documents are private and only open to the employee, their supervisor and the admins; the employee can also attach it later from My Leave
 - Portal > Team Leave: a supervisor approves or rejects the leave requests of their team (with a reason for rejections); the employee is told by email and who decided is recorded
 
+### Fixed
+
+- Employees and admins created in the admin panel no longer get their email address as password; they choose one with "Forgot password" (as the form says)
+- Departments: the list showed "No Manager" for every department; it now shows the manager, and can be searched and sorted by manager name
+- Departments: the manager is told only when they are assigned (a new manager was never told, the previous one was told again, and every edit sent a notification)
+- Dashboard: the employee counts included the admins, so they did not match the Employees list they link to
+
 ## [v1.1.0] - 2026-01-05
 
 ### Added

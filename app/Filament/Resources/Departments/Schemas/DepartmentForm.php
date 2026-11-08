@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Filament\Resources\Departments\Schemas;
 
+use App\Models\Employee;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use App\Models\Employee;
+
 class DepartmentForm
 {
     public static function configure(Schema $schema): Schema
