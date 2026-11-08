@@ -1,0 +1,709 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property App\\Filament\\Pages\\CompanySettings\:\:\$form\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Filament/Pages/CompanySettings.php
+
+		-
+			message: '#^Access to an undefined property App\\Filament\\Pages\\EmailSettings\:\:\$form\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Filament/Pages/EmailSettings.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:role\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Filament/Resources/Admins/AdminResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:assignRole\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Filament/Resources/Admins/Pages/CreateAdmin.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>full_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Filament/Resources/Departments/Schemas/DepartmentTable.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:role\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Filament/Resources/Employees/EmployeeResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:assignRole\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Filament/Resources/Employees/Pages/CreateEmployee.php
+
+		-
+			message: '#^Called ''pluck'' on Laravel collection, but could have been retrieved as a query\.$#'
+			identifier: larastan.noUnnecessaryCollectionCall
+			count: 2
+			path: app/Filament/Resources/Employees/Schemas/EmployeeForm.php
+
+		-
+			message: '#^Class Filament\\Forms\\Components\\Textarea referenced with incorrect case\: Filament\\Forms\\Components\\TextArea\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: app/Filament/Resources/Employees/Schemas/EmployeeForm.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:withoutSupervisor\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Filament/Resources/Employees/Schemas/EmployeeTable.php
+
+		-
+			message: '#^Called ''pluck'' on Laravel collection, but could have been retrieved as a query\.$#'
+			identifier: larastan.noUnnecessaryCollectionCall
+			count: 2
+			path: app/Filament/Resources/Employees/Schemas/EmployeeTable.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Filament/Resources/Employees/Schemas/EmployeeTable.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Attendance\:\:\$clock_in\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Attendance/Models/Attendance.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Attendance\:\:\$clock_out\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Attendance/Models/Attendance.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Attendance/Models/Attendance.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$end_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Attendance/Models/Shift.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$start_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Attendance/Models/Shift.php
+
+		-
+			message: '#^Method App\\Modules\\Attendance\\Tests\\AttendanceTest\:\:attendance\(\) should return App\\Modules\\Attendance\\Models\\Attendance but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Modules/Attendance/Tests/AttendanceTest.php
+
+		-
+			message: '#^Method Guava\\Calendar\\Filament\\CalendarWidget\:\:editAction\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: app/Modules/Calendar/Filament/Widgets/AllCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$all_day\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$end_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$start_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Calendar\\Models\\Event\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Calendar/Models/Event.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: app/Modules/Inbox/Filament/Resources/Messages/Pages/CreateMessage.php
+
+		-
+			message: '#^Cannot access property \$creator_id on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Modules/Inbox/Filament/Resources/Messages/Pages/ViewMessage.php
+
+		-
+			message: '#^Cannot access property \$id on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Modules/Inbox/Filament/Resources/Messages/Pages/ViewMessage.php
+
+		-
+			message: '#^Cannot access property \$receiver_id on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Modules/Inbox/Filament/Resources/Messages/Pages/ViewMessage.php
+
+		-
+			message: '#^Cannot access property \$subject on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Modules/Inbox/Filament/Resources/Messages/Pages/ViewMessage.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Inbox\\Models\\Message\:\:\$sender_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Inbox/Observers/MessageObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Inbox\\Models\\Topic\:\:\$receiver_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Inbox/Observers/MessageObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Inbox\\Models\\Topic\:\:\$subject\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Inbox/Observers/MessageObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$color\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Database/Seeders/LeaveTypeSeeder.php
+
+		-
+			message: '#^Offset ''color'' on array\{name\: ''Annual Leave'', color\: ''\#2563eb'', tiers\: array\{array\{min_years\: 0, days\: 8\}, array\{min_years\: 2, days\: 12\}, array\{min_years\: 5, days\: 16\}\}\}\|array\{name\: ''Compassionate Leave'', color\: ''\#475569'', days_per_year\: 3\}\|array\{name\: ''Hospitalisation…'', color\: ''\#9333ea'', days_per_year\: 60, requires_attachment\: true\}\|array\{name\: ''Maternity Leave'', color\: ''\#db2777'', days_per_year\: 98, gender_restriction\: ''Female'', count_calendar_days\: true\}\|array\{name\: ''Paternity Leave'', color\: ''\#0891b2'', days_per_year\: 7, gender_restriction\: ''Male''\}\|array\{name\: ''Sick Leave'', color\: ''\#dc2626'', requires_attachment\: true, tiers\: array\{array\{min_years\: 0, days\: 14\}, array\{min_years\: 2, days\: 18\}, array\{min_years\: 5, days\: 22\}\}\}\|array\{name\: ''Unpaid Leave'', color\: ''\#d97706''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Modules/Leave/Database/Seeders/LeaveTypeSeeder.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''\#0891b2''\|''\#2563eb''\|''\#475569''\|''\#9333ea''\|''\#d97706''\|''\#db2777''\|''\#dc2626'' and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Modules/Leave/Database/Seeders/LeaveTypeSeeder.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$gender_restriction\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Pages/LeaveBalances.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Pages/LeaveBalances.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Pages/LeaveCalendar.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/MyLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/MyLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/MyLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/MyLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/TeamLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Portal/TeamLeaveResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Resources/Leaves/Schemas/LeaveForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Resources/Leaves/Schemas/LeaveForm.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Resources/Leaves/Schemas/LeaveTable.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Resources/Leaves/Schemas/LeaveTable.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Holiday\:\:\$date\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Holiday\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Filament/Widgets/MyLeaveBalances.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Http/LeaveAttachmentController.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$days\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Models/Leave.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Models/Leave.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Models/Leave.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Models/Leave.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$count_calendar_days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Models/Leave.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$color\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Models/LeaveType.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDates.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDates.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$actioned_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDecided.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDecided.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$rejection_reason\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDecided.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveDecided.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveRequested.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveRequested.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveRequested.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Notifications/LeaveRequested.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$actioned_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Observers/LeaveObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Observers/LeaveObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Observers/LeaveObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Call to function in_array\(\) with arguments ''Approved''\|''Rejected'', array\{''Approved'', ''Rejected''\} and true will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Modules/Leave/Services/LeaveApproval.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveAttachment.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Services/LeaveAttachment.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$leave_type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$count_calendar_days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$days_per_year\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$gender_restriction\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$tiers\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Services/LeaveService.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Holiday\:\:\$date\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Modules/Leave/Tests/HolidaySeederTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 11
+			path: app/Modules/Leave/Tests/LeaveEvidenceTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/LeaveEvidenceTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/LeaveEvidenceTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/LeaveEvidenceTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/LeaveServiceTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/MyLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$employee_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Tests/MyLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/MyLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Modules/Leave/Tests/MyLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$actioned_by\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Modules/Leave/Tests/TeamLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$rejection_reason\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Leave/Tests/TeamLeaveTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Leave\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 9
+			path: app/Modules/Leave/Tests/TeamLeaveTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignIdColumnDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Modules/Payroll/Database/Migrations/2025_06_23_200056_create_payrolls_table.php
+
+		-
+			message: '#^Parameter \#2 \$divideBy of method Filament\\Tables\\Columns\\TextColumn\:\:money\(\) expects Closure\|int, true given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Modules/Payroll/Filament/Resources/Payrolls/Schema/PayrollTable.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Tasks\\Models\\Task\:\:\$due_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Tasks/Models/Task.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Tasks\\Models\\Task\:\:\$assignee_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Tasks/Observers/TaskObserver.php
+
+		-
+			message: '#^Access to an undefined property App\\Modules\\Tasks\\Models\\Task\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Modules/Tasks/Observers/TaskObserver.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: app/Observers/DepartmentObserver.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Models\\User\.$#'
+			identifier: class.notFound
+			count: 1
+			path: database/factories/UserFactory.php
+
+		-
+			message: '#^Type App\\Models\\User in generic type Illuminate\\Database\\Eloquent\\Factories\\Factory\<App\\Models\\User\> in PHPDoc tag @extends is not subtype of template type TModel of Illuminate\\Database\\Eloquent\\Model of class Illuminate\\Database\\Eloquent\\Factories\\Factory\.$#'
+			identifier: generics.notSubtype
+			count: 1
+			path: database/factories/UserFactory.php

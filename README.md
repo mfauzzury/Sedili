@@ -73,7 +73,9 @@ docker compose exec laravel.test php artisan migrate --seed
 -   App: http://localhost
 -   Mailpit (caught emails): http://localhost:8025
 -   MySQL from your host: `127.0.0.1:3308` (change with `FORWARD_DB_PORT`)
--   Frontend dev server: `docker compose exec laravel.test npm run dev`
+-   Frontend dev server: `docker compose exec laravel.test npm run dev` (it only serves assets; open the app on http://localhost, not on port 5173)
+-   Emails (leave requests and decisions) are queued: the `queue` service of the compose file sends them. Without Docker, run `php artisan queue:work` (`composer dev` does it) or they stay in the `jobs` table.
+-   Checks: `composer analyse` (Larastan) and `composer style` (Pint, changed files only)
 
 If you change `.env` (for example `APP_KEY`), mirror it in `.env.docker`.
 

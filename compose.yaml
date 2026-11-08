@@ -25,6 +25,25 @@ services:
         depends_on:
             - mysql
             - mailpit
+    # Sends the queued emails (leave requests and decisions): without it they wait in the jobs table
+    queue:
+        image: 'sail-8.3/app'
+        command: php artisan queue:work --tries=3 --sleep=3
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+        volumes:
+            - '.:/var/www/html'
+            - './.env.docker:/var/www/html/.env'
+        networks:
+            - sail
+        depends_on:
+            - laravel.test
+            - mysql
+            - mailpit
+        restart: unless-stopped
     mysql:
         image: 'mysql:8.0'
         ports:

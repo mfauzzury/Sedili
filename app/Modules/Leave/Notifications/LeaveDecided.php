@@ -6,15 +6,15 @@ use App\Models\Employee;
 use App\Modules\Leave\Filament\Portal\MyLeaveResource;
 use App\Modules\Leave\Models\Leave;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /**
  * Email to the employee when their leave request is approved or rejected.
  */
-class LeaveDecided extends Notification
+class LeaveDecided extends LeaveNotification
 {
     public function __construct(public Leave $leave)
     {
+        $this->afterCommit();
     }
 
     /**
