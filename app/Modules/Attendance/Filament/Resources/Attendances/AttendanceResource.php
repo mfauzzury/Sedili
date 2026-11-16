@@ -28,8 +28,8 @@ class AttendanceResource extends Resource
     protected static ?string $model = Attendance::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
-    protected static string|\UnitEnum|null $navigationGroup = 'HR Management';
-    protected static ?int $navigationSort = 2;
+    protected static string|\UnitEnum|null $navigationGroup = 'Attendance';
+    protected static ?int $navigationSort = 1;
 
 
     public static function form(Schema $schema): Schema
