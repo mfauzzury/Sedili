@@ -35,6 +35,8 @@ class MyLeaveResource extends Resource
     protected static ?string $slug = 'my-leave';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-minus';
+    protected static string|\UnitEnum|null $navigationGroup = 'Leave';
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'My Leave';
     protected static ?string $modelLabel = 'Leave request';
     protected static ?string $pluralModelLabel = 'My Leave';

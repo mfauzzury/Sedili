@@ -24,8 +24,14 @@ class LeaveCalendar extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        // In the admin panel the page sits in HR Management; the portal has a flat menu
-        return Filament::getCurrentPanel()?->getId() === 'admin' ? 'HR Management' : null;
+        // In the admin panel the page sits in HR Management; in the portal it is with the other leave screens
+        return Filament::getCurrentPanel()?->getId() === 'admin' ? 'HR Management' : 'Leave';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        // After My Leave and Team Leave in the portal
+        return Filament::getCurrentPanel()?->getId() === 'admin' ? 2 : 3;
     }
 
     public function isAdminPanel(): bool

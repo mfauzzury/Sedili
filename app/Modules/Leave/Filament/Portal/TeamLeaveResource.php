@@ -32,6 +32,8 @@ class TeamLeaveResource extends Resource
     protected static ?string $slug = 'team-leave';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+    protected static string|\UnitEnum|null $navigationGroup = 'Leave';
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'Team Leave';
     protected static ?string $modelLabel = 'Leave request';
     protected static ?string $pluralModelLabel = 'Team Leave';
