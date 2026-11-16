@@ -47,6 +47,8 @@ class EmployeePanelProvider extends PanelProvider
             ->brandName(fn() => app(CompanyProfile::class)->name() ?? 'Portal')
             ->brandLogo(fn() => app(CompanyProfile::class)->logoUrl())
             ->brandLogoHeight('1.5rem')
+            // Breadcrumbs on every page, with the menu group in front (Organization > Org Chart)
+            ->breadcrumbs(true, hasNavigationHierarchy: true)
             ->favicon(fn() => app(CompanyProfile::class)->faviconUrl())
 
 
