@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Pages\Dashboard;
 use App\Modules\ModuleManager;
+use App\Filament\Employee\Widgets\MyTodos;
 use App\Services\CompanyProfile;
 
 use Filament\Widgets\AccountWidget;
@@ -59,12 +60,18 @@ class EmployeePanelProvider extends PanelProvider
                 ...$modules->filament('portal', 'pages'),
             ])
             ->resources($modules->filament('portal', 'resources'))
-            ->livewireComponents($modules->filament('portal', 'livewire'))
-            ->discoverWidgets(in: app_path('Filament/Employee/Widgets'), for: 'App\\Filament\\Employee\\Widgets')
-            ->widgets($modules->filament('portal', 'widgets'))
+            // The dashboard shows what the employee has to do (collected from the modules, see Module::todos()).
+            // The widgets of the modules are not shown on it, but they stay registered with Livewire
+            // (a widget that is embedded in a page still needs that)
+            ->widgets([MyTodos::class])
+            ->livewireComponents([
+                ...$modules->filament('portal', 'livewire'),
+                ...$modules->filament('portal', 'widgets'),
+            ])
 
             ->navigationGroups([
-                'Work space'
+                'Leave',
+                'Work space',
             ])
             ->middleware([
                 EncryptCookies::class,

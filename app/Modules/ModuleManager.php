@@ -106,6 +106,29 @@ class ModuleManager
     }
 
     /**
+     * What the employee has to do, from every enabled module: [module key => ['label' => ..., 'todos' => list<Todo>]].
+     * Modules with nothing to do are left out, and a module that fails does not break the others.
+     *
+     * @return array<string, array{label: string, todos: list<Todo>}>
+     */
+    public function todos(\App\Models\Employee $employee, string $panelId): array
+    {
+        $result = [];
+        foreach ($this->enabled() as $module) {
+            try {
+                $todos = $module->todos($employee, $panelId);
+            } catch (Throwable $e) {
+                report($e);
+                continue;
+            }
+            if ($todos !== []) {
+                $result[$module->key()] = ['label' => $module->label(), 'todos' => array_values($todos)];
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @return array<string, bool>
      */
     private function states(): array

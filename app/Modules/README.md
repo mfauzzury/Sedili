@@ -28,6 +28,12 @@ app/Modules/Leave/
 3. Optional: `seeders()` (run by `db:seed`), `requires()` (keys of the modules it depends on),
    `boot()` (observers, events; only called while the module is enabled).
 4. Put the migrations in `Database/Migrations`, then run `php artisan migrate`.
+5. Optional: `todos(Employee $employee, string $panelId)` returns what the employee has to do in
+   this module, as a list of `App\Modules\Todo` (title, url, and optionally a detail line, a badge
+   such as a due date, an urgency colour `danger|warning|gray` and an icon). The dashboard of the
+   portal collects them from every enabled module under **To do**. Keep it short: the most urgent
+   first, and one aggregated line ("3 unread messages") rather than one per item when there are many.
+   Only answer for `$panelId === 'portal'`; a module that fails is skipped, it never breaks the dashboard.
 
 The module appears in **System > Modules**, where an admin enables or disables it.
 

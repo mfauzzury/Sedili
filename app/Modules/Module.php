@@ -77,6 +77,19 @@ abstract class Module
     }
 
     /**
+     * What the employee has to do in this module (open tasks, unread messages, requests to approve...),
+     * shown on the dashboard of the portal. Only called while the module is enabled. Keep it short:
+     * a few lines, the most urgent first, one aggregated line rather than one per item when there are many.
+     *
+     * @param string $panelId id of the panel the list is for (admin, portal)
+     * @return list<Todo>
+     */
+    public function todos(\App\Models\Employee $employee, string $panelId): array
+    {
+        return [];
+    }
+
+    /**
      * Called at boot, only when the module is enabled (observers, events, etc.).
      */
     public function boot(): void
