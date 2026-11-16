@@ -510,3 +510,40 @@
     width: 2rem;
     color: #16a34a;
 }
+
+/* My leave balance on a phone: two tiles per row, each tile stacked (ring on top, text centred) */
+@media (max-width: 40rem) {
+    .lb-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .lb-tile {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        text-align: center;
+    }
+
+    .lb-ring {
+        height: 3.5rem;
+        width: 3.5rem;
+    }
+
+    .lb-name {
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 0.8125rem;
+        line-height: 1.125rem;
+    }
+
+    /* An odd tile at the end takes the whole row instead of leaving a hole */
+    .lb-tile:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Leave calendar: the legend and its note go after the calendar, on every screen size */
+.fi-page-content > .leave-legend {
+    order: 1;
+}

@@ -1,4 +1,6 @@
 <x-filament-panels::page>
+    {{-- The page body comes before the footer widget (the calendar); .leave-legend in the theme moves it after the calendar --}}
+    <div class="leave-legend space-y-3">
     <div class="text-sm text-gray-600 dark:text-gray-300" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;">
         @foreach ($this->getLegend() as $item)
             <span style="display:inline-flex;align-items:center;gap:8px;">
@@ -13,4 +15,5 @@
             The leave type and the reason of your colleagues stay private. Click "+N more" on a busy day to see everyone.
         @endif
     </p>
+    </div>
 </x-filament-panels::page>
