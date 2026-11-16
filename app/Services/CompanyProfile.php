@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Name, logo and contact details of the company, stored in the settings table.
+ * Name, logo, favicon and contact details of the company, stored in the settings table.
  * Used for the branding of both panels and available for documents (payslips, letters...).
  */
 class CompanyProfile
@@ -14,7 +14,10 @@ class CompanyProfile
     public const DIRECTORY = 'branding';
 
     /** Settings keys, all stored as "company.{field}" */
-    public const FIELDS = ['name', 'registration_no', 'address', 'phone', 'email', 'website', 'logo'];
+    public const FIELDS = ['name', 'registration_no', 'address', 'phone', 'email', 'website', 'logo', 'favicon'];
+
+    /** Fields that hold an uploaded file (path on DISK) */
+    public const FILE_FIELDS = ['logo', 'favicon'];
 
     public function __construct(private readonly SettingsStore $store)
     {
@@ -40,27 +43,40 @@ class CompanyProfile
 
     public function logoUrl(): ?string
     {
-        $logo = $this->get('logo');
+        return $this->fileUrl('logo');
+    }
+
+    public function faviconUrl(): ?string
+    {
+        return $this->fileUrl('favicon');
+    }
+
+    private function fileUrl(string $field): ?string
+    {
+        $path = $this->get($field);
         // Built from the host of the current request (through the public/storage link), not from
-        // APP_URL, so that the logo also loads when the app is opened on another host or port
-        return $logo ? asset('storage/' . $logo) : null;
+        // APP_URL, so that the file also loads when the app is opened on another host or port
+        return $path ? asset('storage/' . $path) : null;
     }
 
     /**
-     * Save the given fields (the others are left untouched). The previous logo file is deleted
-     * when it is replaced or removed.
+     * Save the given fields (the others are left untouched). The previous logo or favicon file is
+     * deleted when it is replaced or removed.
      *
      * @param array<string, string|null> $values
      */
     public function update(array $values): void
     {
         $values = array_intersect_key($values, array_flip(self::FIELDS));
-        $previousLogo = $this->get('logo');
+        $previous = $this->all();
 
         $this->store->save('company', $values);
 
-        if ($previousLogo && array_key_exists('logo', $values) && $values['logo'] !== $previousLogo) {
-            Storage::disk(self::DISK)->delete($previousLogo);
+        foreach (self::FILE_FIELDS as $field) {
+            $old = $previous[$field] ?? null;
+            if ($old && array_key_exists($field, $values) && $values[$field] !== $old) {
+                Storage::disk(self::DISK)->delete($old);
+            }
         }
     }
 }

@@ -16,25 +16,30 @@
                             <p class="text-xs text-gray-400">Requires: {{ implode(', ', $module->requires()) }}</p>
                         @endif
                     </div>
-                    @if ($enabled)
-                        <x-filament::button
-                            size="sm"
-                            outlined
-                            color="danger"
-                            wire:click="toggle('{{ $module->key() }}')"
+                    {{-- Filament's own toggle classes, driven by the saved state rather than browser state, so a cancelled confirmation leaves the switch where it was --}}
+                    <button
+                        type="button"
+                        role="switch"
+                        aria-checked="{{ $enabled ? 'true' : 'false' }}"
+                        aria-label="{{ $module->label() }}"
+                        wire:click="toggle('{{ $module->key() }}')"
+                        wire:loading.attr="disabled"
+                        wire:target="toggle"
+                        @if ($enabled)
                             wire:confirm="Disable {{ $module->label() }}? Its menu and screens are hidden, its data is kept."
-                        >
-                            Disable
-                        </x-filament::button>
-                    @else
-                        <x-filament::button
-                            size="sm"
-                            outlined
-                            wire:click="toggle('{{ $module->key() }}')"
-                        >
-                            Enable
-                        </x-filament::button>
-                    @endif
+                        @endif
+                        @class([
+                            'fi-toggle',
+                            ...($enabled
+                                ? ['fi-toggle-on', ...\Filament\Support\get_component_color_classes(\Filament\Support\View\Components\ToggleComponent::class, 'primary')]
+                                : ['fi-toggle-off', ...\Filament\Support\get_component_color_classes(\Filament\Support\View\Components\ToggleComponent::class, 'gray')]),
+                        ])
+                    >
+                        <div>
+                            <div aria-hidden="true"></div>
+                            <div aria-hidden="true"></div>
+                        </div>
+                    </button>
                 </div>
             </x-filament::section>
         @endforeach

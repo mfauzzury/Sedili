@@ -47,6 +47,7 @@ class EmployeePanelProvider extends PanelProvider
             ->brandName(fn() => app(CompanyProfile::class)->name() ?? 'Portal')
             ->brandLogo(fn() => app(CompanyProfile::class)->logoUrl())
             ->brandLogoHeight('1.5rem')
+            ->favicon(fn() => app(CompanyProfile::class)->faviconUrl())
 
 
             ->discoverResources(in: app_path('Filament/Employee/Resources'), for: 'App\\Filament\\Employee\\Resources')

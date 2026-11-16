@@ -26,3 +26,24 @@
 .fi-body {
     --topbar-height: 3.5rem;
 }
+
+/* Company logo upload: show just the logo. FilePond paints a dark panel behind the preview, which
+   hides a dark logo on a transparent background. */
+.company-logo-upload {
+    & .filepond--item-panel,
+    & .filepond--image-preview {
+        background: transparent;
+    }
+
+    & .filepond--image-preview-overlay {
+        display: none;
+    }
+
+    & .filepond--file {
+        color: var(--gray-700);
+    }
+}
+
+.dark .company-logo-upload .filepond--file {
+    color: var(--gray-300);
+}
