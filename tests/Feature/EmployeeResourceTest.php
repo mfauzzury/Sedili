@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\Employees\Pages\CreateEmployee;
 use App\Filament\Resources\Employees\Pages\EditEmployee;
+use App\Filament\Resources\Employees\EmployeeResource;
 use App\Filament\Resources\Employees\Pages\ListEmployees;
+use App\Filament\Resources\Employees\Pages\ViewEmployee;
 use App\Models\Employee;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -114,6 +116,28 @@ class EmployeeResourceTest extends TestCase
 
         $this->assertSame('Alicia', $alice->fresh()->first_name);
         $this->assertSame('Contract', $alice->fresh()->employment_type);
+    }
+
+    public function test_opening_an_employee_shows_the_edit_form_to_someone_who_can_edit(): void
+    {
+        $this->loginAsAdmin();
+        $employee = $this->makeEmployee('Opened');
+
+        Livewire::test(ViewEmployee::class, ['record' => $employee->getKey()])
+            ->assertRedirect(EmployeeResource::getUrl('edit', ['record' => $employee]));
+    }
+
+    public function test_the_save_and_create_buttons_are_black_and_delete_is_a_red_outline(): void
+    {
+        $this->loginAsAdmin();
+        $employee = $this->makeEmployee('Styled');
+
+        $edit = Livewire::test(EditEmployee::class, ['record' => $employee->getKey()])->html();
+        $this->assertMatchesRegularExpression('/<button[^>]*fi-color-black[^>]*>\s*(<[^>]+>\s*)*Save changes/s', $edit);
+        $this->assertMatchesRegularExpression('/<button[^>]*fi-outlined[^>]*fi-color-danger[^>]*>/s', $edit);
+
+        $create = Livewire::test(CreateEmployee::class)->html();
+        $this->assertMatchesRegularExpression('/<button[^>]*fi-color-black[^>]*>\s*(<[^>]+>\s*)*Create/s', $create);
     }
 
     public function test_an_employee_cannot_report_to_someone_who_reports_to_them(): void
