@@ -15,6 +15,12 @@
                         @if ($module->requires())
                             <p class="text-xs text-gray-400">Requires: {{ implode(', ', $module->requires()) }}</p>
                         @endif
+                        {{-- Only while enabled: the pages of a disabled module are not registered --}}
+                        @if ($enabled && ($settingsUrl = $module->settingsUrl()))
+                            <x-filament::link :href="$settingsUrl" icon="heroicon-m-cog-6-tooth" size="sm" class="mt-1">
+                                Settings
+                            </x-filament::link>
+                        @endif
                     </div>
                     {{-- Filament's own toggle classes, driven by the saved state rather than browser state, so a cancelled confirmation leaves the switch where it was --}}
                     <button

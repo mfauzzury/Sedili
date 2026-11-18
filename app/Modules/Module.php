@@ -90,6 +90,15 @@ abstract class Module
     }
 
     /**
+     * The page where the module is configured, linked from System > Modules while it is enabled
+     * (null: nothing to configure).
+     */
+    public function settingsUrl(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Called at boot, only when the module is enabled (observers, events, etc.).
      */
     public function boot(): void

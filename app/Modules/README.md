@@ -34,6 +34,8 @@ app/Modules/Leave/
    portal collects them from every enabled module under **To do**. Keep it short: the most urgent
    first, and one aggregated line ("3 unread messages") rather than one per item when there are many.
    Only answer for `$panelId === 'portal'`; a module that fails is skipped, it never breaks the dashboard.
+6. Optional: `settingsUrl()` returns the page where the module is configured (usually a page of the
+   module in the admin panel). **System > Modules** shows a "Settings" link to it while the module is enabled.
 
 The module appears in **System > Modules**, where an admin enables or disables it.
 
