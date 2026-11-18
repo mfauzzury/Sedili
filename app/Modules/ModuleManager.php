@@ -122,7 +122,7 @@ class ModuleManager
                 continue;
             }
             if ($todos !== []) {
-                $result[$module->key()] = ['label' => $module->label(), 'todos' => array_values($todos)];
+                $result[$module->key()] = ['label' => $module->label(), 'todos' => $todos];
             }
         }
         return $result;

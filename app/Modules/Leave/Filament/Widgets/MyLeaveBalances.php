@@ -50,7 +50,7 @@ class MyLeaveBalances extends Widget
             ->groupBy('leave_type', 'status')
             ->get();
         foreach ($rows as $row) {
-            $days[$row->leave_type][$row->status] = (float) $row->total;
+            $days[$row->leave_type][$row->status] = (float) $row->getAttribute('total');
         }
 
         $balances = [];

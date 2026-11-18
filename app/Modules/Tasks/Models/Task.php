@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property string $status
+ * @property int|null $sort_order
+ * @property int|null $assignee_id
+ * @property \Illuminate\Support\Carbon|null $due_date
+ * @property-read Employee|null $assignee
+ */
 class Task extends Model
 {
     //

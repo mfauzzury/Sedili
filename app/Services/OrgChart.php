@@ -135,7 +135,7 @@ class OrgChart
             return [
                 'type' => 'department',
                 'id' => $model?->id,
-                'name' => $model?->name ?? 'No department',
+                'name' => $model->name ?? 'No department',
                 'code' => $model?->code,
                 // Shown on the department when its manager is not one of its people (otherwise they head the people below it)
                 'head' => $manager !== null && $manager->is_active && !(isset($byId[$manager->id]) && $deptKey($byId[$manager->id]) === $key) ? $manager->name : null,
