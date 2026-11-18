@@ -71,6 +71,7 @@ class EmployeePanelProvider extends PanelProvider
 
             ->navigationGroups([
                 'Leave',
+                'Claims',
                 'Work space',
             ])
             ->middleware([

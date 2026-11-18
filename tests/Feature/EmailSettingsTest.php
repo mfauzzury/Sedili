@@ -137,6 +137,8 @@ class EmailSettingsTest extends TestCase
     {
         $this->actingAsEmployee('admin');
         app(CompanyProfile::class)->update(['name' => 'Sedili Sdn Bhd', 'logo' => 'branding/logo.png']);
+        // Only the leave emails, so that the first preview is a leave one
+        app(ModuleManager::class)->setEnabled('claims', false);
 
         config(['app.name' => 'Laravel']);
         $page = Livewire::test(EmailSettings::class);
@@ -174,10 +176,11 @@ class EmailSettingsTest extends TestCase
         $this->assertStringNotContainsString('<img', $html);
     }
 
-    public function test_there_is_no_preview_when_the_module_with_the_emails_is_disabled(): void
+    public function test_there_is_no_preview_when_the_modules_with_emails_are_disabled(): void
     {
         $this->actingAsEmployee('admin');
         app(ModuleManager::class)->setEnabled('leave', false);
+        app(ModuleManager::class)->setEnabled('claims', false);
 
         $page = Livewire::test(EmailSettings::class);
 
