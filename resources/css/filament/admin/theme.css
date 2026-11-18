@@ -547,3 +547,213 @@
 .fi-page-content > .leave-legend {
     order: 1;
 }
+
+/* Sign-in page: the form on one side, a quiet animated panel on the other (wide screens only) */
+.auth-split {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 64rem) {
+    .auth-split {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    }
+}
+
+.auth-form-ctn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    background: white;
+}
+
+.dark .auth-form-ctn {
+    background: var(--gray-950);
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 24rem;
+}
+
+/* Heading on the left, like the fields below it */
+.auth-form .fi-simple-header {
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.auth-form .fi-simple-header .fi-logo {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+/* A bigger logo than in the menu (Filament sets its height inline, hence !important); a text name just grows */
+.auth-form .fi-simple-header img.fi-logo {
+    height: 2.5rem !important;
+    width: auto;
+    max-width: 100%;
+}
+
+.auth-form .fi-simple-header div.fi-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.auth-form .fi-simple-header-heading,
+.auth-form .fi-simple-header-subheading {
+    text-align: left;
+}
+
+.auth-form .fi-simple-header-heading {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+}
+
+/* The Sign in button takes the full width */
+.auth-form .fi-ac {
+    display: block;
+}
+
+.auth-form .fi-ac .fi-btn {
+    width: 100%;
+}
+
+.auth-visual {
+    position: relative;
+    display: none;
+    overflow: hidden;
+    color: var(--gray-900);
+    background:
+        radial-gradient(ellipse at 15% 0%, rgb(255 255 255 / 0.9), transparent 60%),
+        linear-gradient(160deg, #f8fafc 0%, #eef5fa 100%);
+}
+
+@media (min-width: 64rem) {
+    .auth-visual {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 3rem;
+    }
+}
+
+.auth-graphic {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(90%, 46rem);
+    transform: translate(-50%, -52%);
+}
+
+.auth-ring {
+    fill: none;
+    stroke: rgb(15 23 42 / 0.08);
+    stroke-width: 1;
+}
+
+.auth-spoke {
+    stroke: rgb(15 23 42 / 0.16);
+    stroke-width: 1;
+}
+
+.auth-node {
+    fill: var(--primary-500);
+}
+
+.auth-node-dim {
+    fill: rgb(100 116 139 / 0.5);
+}
+
+.auth-core {
+    fill: var(--gray-950);
+}
+
+.auth-core-glow {
+    transform-origin: 0 0;
+    animation: auth-pulse 7s ease-in-out infinite;
+}
+
+.auth-orbit {
+    transform-origin: 0 0;
+}
+
+.auth-orbit-1 { animation: auth-spin 40s linear infinite; }
+.auth-orbit-2 { animation: auth-spin 70s linear infinite reverse; }
+.auth-orbit-3 { animation: auth-spin 100s linear infinite; }
+.auth-orbit-4 { animation: auth-spin 140s linear infinite reverse; }
+
+.auth-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.45;
+}
+
+.auth-blob-1 {
+    top: -8rem;
+    right: -6rem;
+    height: 22rem;
+    width: 22rem;
+    background: var(--primary-200);
+    animation: auth-drift 22s ease-in-out infinite alternate;
+}
+
+.auth-blob-2 {
+    bottom: -9rem;
+    left: -7rem;
+    height: 20rem;
+    width: 20rem;
+    background: var(--primary-300);
+    animation: auth-drift 28s ease-in-out infinite alternate-reverse;
+}
+
+.auth-visual-text {
+    position: relative;
+    max-width: 22rem;
+}
+
+.auth-visual-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.auth-visual-text p {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+@keyframes auth-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes auth-pulse {
+    0%, 100% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.12); opacity: 1; }
+}
+
+@keyframes auth-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(3rem, 2rem) scale(1.15); }
+}
+
+/* No motion for people who ask for less of it */
+@media (prefers-reduced-motion: reduce) {
+    .auth-orbit,
+    .auth-core-glow,
+    .auth-blob {
+        animation: none;
+    }
+}
+
+/* The black buttons (Sign in, Save changes, Create...) turn white in dark mode, where black would vanish */
+.dark .fi-btn.fi-color-black:not(.fi-outlined) {
+    background-color: white !important;
+    color: var(--gray-950) !important;
+}
+
+.dark .fi-btn.fi-color-black:not(.fi-outlined):hover {
+    background-color: var(--gray-200) !important;
+}

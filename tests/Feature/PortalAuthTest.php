@@ -45,11 +45,10 @@ class PortalAuthTest extends TestCase
         return $employee;
     }
 
-    public function test_login_page_can_be_accessed()
+    public function test_the_portal_has_no_login_page_of_its_own()
     {
-        $response = $this->get('/portal/login');
-
-        $response->assertStatus(200);
+        // Admins and employees sign in on the same page
+        $this->get('/portal/login')->assertRedirect('/login');
     }
 
     public function test_reset_password_page_can_be_accessed()

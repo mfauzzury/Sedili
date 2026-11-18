@@ -25,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SettingsStore::class);
+        // After signing in: admins to the admin panel, employees to the portal (one login page for both)
+        $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LoginResponse::class, \App\Filament\Auth\LoginResponse::class);
     }
 
     /**
@@ -63,8 +65,8 @@ class AppServiceProvider extends ServiceProvider
         EditAction::configureUsing(fn(EditAction $action) => $action->color('gray')->outlined());
         DeleteAction::configureUsing(fn(DeleteAction $action) => $action->color('danger')->outlined());
 
-        // Black "Save changes" / "Create" buttons on every form page (the Save buttons of the settings
-        // pages use color="black" in their views)
+        // Black "Save changes" / "Create" buttons on every form page, and the buttons of the sign-in flow (Sign in,
+        // reset password); the Save buttons of the settings pages use color="black" in their views
         FilamentColor::register([
             'black' => [
                 50 => '#fafafa', 100 => '#f5f5f5', 200 => '#e5e5e5', 300 => '#d4d4d4', 400 => '#525252',
@@ -72,7 +74,7 @@ class AppServiceProvider extends ServiceProvider
             ],
         ]);
         Action::configureUsing(function (Action $action) {
-            if (in_array($action->getName(), ['save', 'create'], true)) {
+            if (in_array($action->getName(), ['save', 'create', 'authenticate', 'request', 'resetPassword'], true)) {
                 $action->color('black');
             }
         });

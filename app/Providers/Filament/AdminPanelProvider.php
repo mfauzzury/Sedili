@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('/')
             ->passwordReset()
             ->profile()
-            ->login()
+            ->login(\App\Filament\Auth\Login::class)
 
             ->databaseNotifications()
             ->authPasswordBroker('employees')

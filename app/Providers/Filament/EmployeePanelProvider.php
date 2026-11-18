@@ -41,7 +41,7 @@ class EmployeePanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarWidth('16rem')
             ->spa()
-            ->login()
+            ->login(\App\Filament\Auth\PortalLogin::class)
             ->passwordReset()
             ->profile()
 
