@@ -26,7 +26,7 @@ class StatsOverview extends BaseWidget
             Stat::make('Total Departments', Department::count())
                 ->label('Total Departments')
                 ->color('primary')
-                ->description('Total number of departments in the organization')
+                ->description('Across the organization')
                 ->icon('heroicon-o-rectangle-group')
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
@@ -37,7 +37,7 @@ class StatsOverview extends BaseWidget
             Stat::make('HR Admins', Employee::role('admin')->count())
                 ->label('Total HR Admins')
                 ->color('success')
-                ->description('Total number of HR admins in the organization')
+                ->description('With admin access')
                 ->icon('heroicon-o-user-group')
                 ->extraAttributes([
                     'class' => 'cursor-pointer',

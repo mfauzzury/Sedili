@@ -14,6 +14,73 @@
     padding-block: 6px;
 }
 
+/* Tighter gap between sidebar lines: 2px instead of 4px */
+.fi-sidebar-group-items {
+    row-gap: 2px;
+}
+
+/* Tighter gap between sidebar groups: 16px instead of 28px */
+.fi-sidebar-nav-groups {
+    row-gap: 16px;
+}
+
+/* Compact stat cards (dashboard): smaller padding, label, value and one-line description */
+.fi-wi-stats-overview .fi-grid {
+    gap: 0.75rem;
+}
+
+.fi-wi-stats-overview-stat {
+    padding: 0.75rem 1rem;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-content {
+    row-gap: 0.125rem;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-label-ctn .fi-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-value {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.fi-wi-stats-overview-stat,
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-content,
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description {
+    min-width: 0;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Stat card descriptions in black (white in dark mode) instead of the colour of the stat */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description,
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description.fi-color {
+    color: var(--gray-950);
+}
+
+.dark .fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description,
+.dark .fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description.fi-color {
+    color: #fff;
+}
+
 /* Separate the sidebar from the content with a thin border (same colour as the borders of the cards) */
 .fi-sidebar {
     border-inline-end: 1px solid var(--gray-200);

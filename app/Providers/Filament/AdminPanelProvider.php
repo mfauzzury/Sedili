@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use App\Modules\ModuleManager;
 use App\Services\CompanyProfile;
@@ -69,8 +70,9 @@ class AdminPanelProvider extends PanelProvider
                 'Work space',
                 'Organization',
                 'HR Management',
+                'Claims',
                 'Attendance',
-                'System',
+                NavigationGroup::make('System')->collapsed(),
             ])
             ->authMiddleware([
                 Authenticate::class,
