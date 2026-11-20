@@ -2,6 +2,8 @@
 
 namespace App\Modules\Leave;
 
+use App\Modules\Leave\ChatTools\LeaveBalanceTool;
+use App\Modules\Leave\ChatTools\MyLeaveRequestsTool;
 use App\Modules\Leave\Database\Seeders\HolidaySeeder;
 use App\Modules\Leave\Database\Seeders\LeaveTypeSeeder;
 use App\Modules\Leave\Filament\Pages\LeaveBalances;
@@ -40,6 +42,11 @@ class LeaveModule extends Module
     public function description(): string
     {
         return 'Leave requests, leave types and entitlements, public holidays, leave balances and the leave calendar; employees request their own leave in the portal.';
+    }
+
+    public function chatTools(): array
+    {
+        return [new LeaveBalanceTool, new MyLeaveRequestsTool];
     }
 
     public function filament(string $panelId): array

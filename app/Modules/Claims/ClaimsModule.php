@@ -3,6 +3,7 @@
 namespace App\Modules\Claims;
 
 use App\Models\Employee;
+use App\Modules\Claims\ChatTools\MyClaimsTool;
 use App\Modules\Claims\Database\Seeders\ClaimTypeSeeder;
 use App\Modules\Claims\Filament\Portal\MyClaimResource;
 use App\Modules\Claims\Filament\Portal\TeamClaimResource;
@@ -147,6 +148,11 @@ class ClaimsModule extends Module
     public function seeders(): array
     {
         return [ClaimTypeSeeder::class];
+    }
+
+    public function chatTools(): array
+    {
+        return [new MyClaimsTool];
     }
 
     public function reports(): array

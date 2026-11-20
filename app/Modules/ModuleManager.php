@@ -153,6 +153,29 @@ class ModuleManager
     }
 
     /**
+     * The chat tools of every enabled module, keyed by the name Claude sees ("leave_balance"). A module
+     * that fails does not break the others.
+     *
+     * @return array<string, array{module: Module, tool: ChatTool}>
+     */
+    public function chatTools(): array
+    {
+        $result = [];
+        foreach ($this->enabled() as $module) {
+            try {
+                $tools = $module->chatTools();
+            } catch (Throwable $e) {
+                report($e);
+                continue;
+            }
+            foreach ($tools as $tool) {
+                $result[$module->key().'_'.$tool->key()] = ['module' => $module, 'tool' => $tool];
+            }
+        }
+        return $result;
+    }
+
+    /**
      * A report by its full id ("leave.balances"), null if unknown or if its module is disabled.
      */
     public function report(string $id): ?Report

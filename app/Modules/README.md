@@ -44,6 +44,14 @@ app/Modules/Leave/
    filter and `$filters->whereInPeriod($query, 'date')` for the period.
 7. Optional: `settingsUrl()` returns the page where the module is configured (usually a page of the
    module in the admin panel). **System > Modules** shows a "Settings" link to it while the module is enabled.
+8. Optional: `chatTools()` returns the lookups the module offers to the chat assistant (Chatbox module),
+   as a list of `App\Modules\ChatTool` ("my leave balance"). Claude calls them itself while answering an
+   employee, once the admin switched them on in **System > Chatbox > Data access** (all are off until
+   then). A tool gives a `key()`, a `label()`, a `description()` for Claude, `dataSent()` (what personal
+   data it sends to Claude, shown to the admin), an `inputSchema()` and `run(Employee $employee, array $input)`.
+   A tool only reads, and only for the `$employee` it is given, who is the one chatting: never take an
+   employee or an id from `$input`, which comes from the model and can be steered by what the employee types.
+   Validate every input value and return only what answers the question (it is sent to Claude).
 
 The module appears in **System > Modules**, where an admin enables or disables it.
 

@@ -101,6 +101,17 @@ abstract class Module
     }
 
     /**
+     * Lookups the module offers to the chat assistant (Chatbox module), for example "my leave balance".
+     * They are available once the Chatbox module is enabled and the admin has switched them on.
+     *
+     * @return list<ChatTool>
+     */
+    public function chatTools(): array
+    {
+        return [];
+    }
+
+    /**
      * The page where the module is configured, linked from System > Modules while it is enabled
      * (null: nothing to configure).
      */

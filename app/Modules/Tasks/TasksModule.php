@@ -5,6 +5,7 @@ namespace App\Modules\Tasks;
 use App\Models\Employee;
 use App\Modules\Module;
 use App\Modules\Todo;
+use App\Modules\Tasks\ChatTools\MyTasksTool;
 use App\Modules\Tasks\Filament\Pages\TaskBoard;
 use App\Modules\Tasks\Models\Task;
 use App\Modules\Tasks\Observers\TaskObserver;
@@ -94,6 +95,11 @@ class TasksModule extends Module
     public function boot(): void
     {
         Task::observe(TaskObserver::class);
+    }
+
+    public function chatTools(): array
+    {
+        return [new MyTasksTool];
     }
 
     public function reports(): array
