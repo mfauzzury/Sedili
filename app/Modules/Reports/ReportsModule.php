@@ -3,6 +3,7 @@
 namespace App\Modules\Reports;
 
 use App\Modules\Module;
+use App\Modules\Reports\Filament\Pages\Insight;
 use App\Modules\Reports\Filament\Pages\Reports;
 use App\Modules\Reports\Filament\Widgets\ReportChartWidget;
 use App\Modules\Reports\Reports\HeadcountReport;
@@ -21,13 +22,13 @@ class ReportsModule extends Module
 
     public function description(): string
     {
-        return 'Reports of every enabled module (leave, claims, attendance, payroll, tasks...) and of the headcount, by period and department, with a CSV export.';
+        return 'Reports of every enabled module (leave, claims, attendance, payroll, tasks...) and of the headcount, by period and department, with a CSV export. With the Chatbox module and its Claude key, admins can also ask for them in plain words (Insight).';
     }
 
     public function filament(string $panelId): array
     {
         return $panelId === 'admin'
-            ? ['pages' => [Reports::class], 'livewire' => [ReportChartWidget::class]]
+            ? ['pages' => [Reports::class, Insight::class], 'livewire' => [ReportChartWidget::class]]
             : [];
     }
 

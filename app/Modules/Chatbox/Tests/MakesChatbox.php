@@ -172,7 +172,7 @@ trait MakesChatbox
  */
 class FakeClaude implements ClaudeGateway
 {
-    /** @var list<array{model: string, system: array, messages: array, tools: array}> */
+    /** @var list<array{model: string, system: array, messages: array, tools: array, maxTokens: int|null}> */
     public array $calls = [];
 
     /** The answer of every turn, unless a script is given */
@@ -191,9 +191,9 @@ class FakeClaude implements ClaudeGateway
     /** @var list<string> the pieces of the default answer */
     public array $deltas = ['The handbook says ', '14 days.'];
 
-    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta): ChatTurn
+    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta, ?int $maxTokens = null): ChatTurn
     {
-        $this->calls[] = compact('model', 'system', 'messages', 'tools');
+        $this->calls[] = compact('model', 'system', 'messages', 'tools', 'maxTokens');
         if ($this->failure !== null) {
             throw $this->failure;
         }

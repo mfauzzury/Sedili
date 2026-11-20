@@ -31,7 +31,7 @@ class ChatboxUsageReport extends Report
 
     public function description(): string
     {
-        return 'Questions asked to the assistant and the tokens used, by day. Never shows what was asked.';
+        return 'Questions asked to the assistant (by employees) and to Insight (by admins), and the tokens used, by day. Never shows what was asked.';
     }
 
     public function icon(): string
@@ -43,8 +43,9 @@ class ChatboxUsageReport extends Report
     {
         $rows = $this->base($filters)
             ->selectRaw('DATE(chatbox_messages.created_at) as day')
-            ->selectRaw("SUM(CASE WHEN chatbox_messages.role = 'user' THEN 1 ELSE 0 END) as questions")
-            ->selectRaw("COUNT(DISTINCT CASE WHEN chatbox_messages.role = 'user' THEN c.employee_id END) as employees")
+            ->selectRaw("SUM(CASE WHEN chatbox_messages.role = 'user' AND c.kind = 'hr' THEN 1 ELSE 0 END) as questions")
+            ->selectRaw("SUM(CASE WHEN chatbox_messages.role = 'user' AND c.kind = 'insight' THEN 1 ELSE 0 END) as insight_questions")
+            ->selectRaw("COUNT(DISTINCT CASE WHEN chatbox_messages.role = 'user' AND c.kind = 'hr' THEN c.employee_id END) as employees")
             ->selectRaw('COALESCE(SUM(chatbox_messages.input_tokens), 0) as input_tokens')
             ->selectRaw('COALESCE(SUM(chatbox_messages.output_tokens), 0) as output_tokens')
             ->selectRaw('COALESCE(SUM(chatbox_messages.cache_read_tokens), 0) as cache_read_tokens')
@@ -54,13 +55,14 @@ class ChatboxUsageReport extends Report
             ->map(fn ($row): array => [
                 'day' => (string) $row->day,
                 'questions' => (int) $row->questions,
+                'insight_questions' => (int) $row->insight_questions,
                 'employees' => (int) $row->employees,
                 'input_tokens' => (int) $row->input_tokens,
                 'output_tokens' => (int) $row->output_tokens,
                 'cache_read_tokens' => (int) $row->cache_read_tokens,
             ]);
 
-        $activeEmployees = (int) $this->base($filters)->where('chatbox_messages.role', ChatMessage::USER)->distinct()->count('c.employee_id');
+        $activeEmployees = (int) $this->base($filters)->where('chatbox_messages.role', ChatMessage::USER)->where('c.kind', 'hr')->distinct()->count('c.employee_id');
         $input = $rows->sum('input_tokens');
         $cached = $rows->sum('cache_read_tokens');
         $allInput = $input + $cached;
@@ -69,6 +71,7 @@ class ChatboxUsageReport extends Report
             columns: [
                 ReportColumn::date('day', 'Day'),
                 ReportColumn::number('questions', 'Questions'),
+                ReportColumn::number('insight_questions', 'Insight questions'),
                 ReportColumn::number('employees', 'Employees'),
                 ReportColumn::number('input_tokens', 'Input tokens'),
                 ReportColumn::number('cache_read_tokens', 'Read from cache'),
@@ -76,10 +79,11 @@ class ChatboxUsageReport extends Report
             ],
             rows: $rows->all(),
             stats: [
-                new ReportStat('Questions', Number::format($rows->sum('questions'))),
+                new ReportStat('Questions', Number::format($rows->sum('questions')), 'Of the employees, to the chat bubble'),
                 new ReportStat('Employees who asked', Number::format($activeEmployees)),
                 new ReportStat('Tokens used', Number::format($input + $rows->sum('output_tokens')), 'Input and output, without the cache'),
                 new ReportStat('Read from cache', $allInput > 0 ? round($cached / $allInput * 100).'%' : '-', 'Share of the input (the handbook is cached)'),
+                new ReportStat('Insight questions', Number::format($rows->sum('insight_questions')), 'Of the admins, to Insight'),
             ],
             chart: ReportChart::line('Questions per day', $rows->pluck('questions', 'day')->all()),
             note: 'The conversations are private to the employees: this report shows counts only.',

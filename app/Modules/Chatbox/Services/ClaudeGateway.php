@@ -21,10 +21,11 @@ interface ClaudeGateway
      * @param  list<array{role: string, content: string|list<array<string, mixed>>}>  $messages
      * @param  list<array{name: string, description: string, input_schema: array<string, mixed>}>  $tools
      * @param  callable(string): void  $onDelta
+     * @param  int|null  $maxTokens  longest answer to write, the default of the gateway when null
      *
      * @throws ChatboxException with a message for the employee
      */
-    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta): ChatTurn;
+    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta, ?int $maxTokens = null): ChatTurn;
 
     /**
      * Check the saved key and model without spending tokens.

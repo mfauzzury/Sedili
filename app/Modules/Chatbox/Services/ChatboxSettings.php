@@ -14,11 +14,35 @@ use Illuminate\Support\Facades\Crypt;
  */
 class ChatboxSettings
 {
-    public const FIELDS = ['enabled', 'api_key', 'model', 'extra_instructions', 'hr_contact', 'hourly_limit', 'tools'];
+    public const FIELDS = [
+        'enabled', 'api_key', 'model', 'extra_instructions', 'hr_contact', 'hourly_limit', 'tools',
+        // Insight: the reports assistant of the admins (Reports > Insight)
+        'insight_enabled', 'insight_model', 'insight_visuals', 'insight_reports', 'insight_max_rows',
+        'insight_max_tokens', 'insight_hourly_limit', 'insight_instructions',
+    ];
 
     public const DEFAULT_MODEL = 'claude-opus-5-5';
 
     public const DEFAULT_HOURLY_LIMIT = 30;
+
+    public const DEFAULT_INSIGHT_MODEL = 'claude-sonnet-5-5';
+
+    public const DEFAULT_INSIGHT_HOURLY_LIMIT = 60;
+
+    /** Rows of a report given to Claude: the rest is on the screen, not in the bill */
+    public const DEFAULT_INSIGHT_MAX_ROWS = 25;
+
+    public const DEFAULT_INSIGHT_MAX_TOKENS = 1500;
+
+    /** Reports Claude may not use until the admin allows them: they hold what each employee is paid */
+    public const SENSITIVE_REPORTS = ['payroll.'];
+
+    /** @var array<string, string> what Insight shows under an answer => label */
+    public const INSIGHT_VISUALS = [
+        'full' => 'Charts and tables',
+        'tables' => 'Tables only',
+        'text' => 'Text only',
+    ];
 
     /** @var array<string, string> model id => label */
     public const MODELS = [
@@ -35,7 +59,7 @@ class ChatboxSettings
     /**
      * The saved values, without the API key (see hasApiKey()).
      *
-     * @return array{enabled: bool, model: string, extra_instructions: string|null, hr_contact: string|null, hourly_limit: int}
+     * @return array<string, mixed>
      */
     public function all(): array
     {
@@ -45,6 +69,14 @@ class ChatboxSettings
             'extra_instructions' => $this->extraInstructions(),
             'hr_contact' => $this->hrContact(),
             'hourly_limit' => $this->hourlyLimit(),
+            'insight_enabled' => $this->isInsightEnabled(),
+            'insight_model' => $this->insightModel(),
+            'insight_visuals' => $this->insightVisuals(),
+            'insight_reports' => $this->insightReports(),
+            'insight_max_rows' => $this->insightMaxRows(),
+            'insight_max_tokens' => $this->insightMaxTokens(),
+            'insight_hourly_limit' => $this->insightHourlyLimit(),
+            'insight_instructions' => $this->insightInstructions(),
         ];
     }
 
@@ -89,6 +121,108 @@ class ChatboxSettings
         $decoded = json_decode((string) $this->store->group('chatbox', ['tools'])['tools'], true);
 
         return is_array($decoded) ? array_values(array_filter($decoded, 'is_string')) : [];
+    }
+
+    /** The admin switched the Insight screen on (it is not ready until it is set up: see isInsightReady()) */
+    public function isInsightEnabled(): bool
+    {
+        return $this->store->group('chatbox', ['insight_enabled'])['insight_enabled'] === '1';
+    }
+
+    public function insightModel(): string
+    {
+        $model = $this->store->group('chatbox', ['insight_model'])['insight_model'];
+
+        return isset(self::MODELS[$model]) ? $model : self::DEFAULT_INSIGHT_MODEL;
+    }
+
+    /** What is shown under an answer: "full" (charts and tables), "tables" or "text". Costs no tokens: Claude does not draw it. */
+    public function insightVisuals(): string
+    {
+        $visuals = $this->store->group('chatbox', ['insight_visuals'])['insight_visuals'];
+
+        return isset(self::INSIGHT_VISUALS[$visuals]) ? $visuals : 'full';
+    }
+
+    public function insightMaxRows(): int
+    {
+        $rows = (int) $this->store->group('chatbox', ['insight_max_rows'])['insight_max_rows'];
+
+        return $rows > 0 ? $rows : self::DEFAULT_INSIGHT_MAX_ROWS;
+    }
+
+    public function insightMaxTokens(): int
+    {
+        $tokens = (int) $this->store->group('chatbox', ['insight_max_tokens'])['insight_max_tokens'];
+
+        return $tokens > 0 ? $tokens : self::DEFAULT_INSIGHT_MAX_TOKENS;
+    }
+
+    /** Questions one admin may ask Insight per hour */
+    public function insightHourlyLimit(): int
+    {
+        $limit = (int) $this->store->group('chatbox', ['insight_hourly_limit'])['insight_hourly_limit'];
+
+        return $limit > 0 ? $limit : self::DEFAULT_INSIGHT_HOURLY_LIMIT;
+    }
+
+    public function insightInstructions(): ?string
+    {
+        return $this->store->group('chatbox', ['insight_instructions'])['insight_instructions'];
+    }
+
+    /**
+     * The ids ("leave.balances") of every report of the enabled modules, for the admin to choose from.
+     *
+     * @return list<string>
+     */
+    public function availableReportIds(): array
+    {
+        $ids = [];
+        foreach ($this->modules->reports() as $moduleKey => $module) {
+            foreach (array_keys($module['reports']) as $key) {
+                $ids[] = "$moduleKey.$key";
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * The reports the admin allows Insight to use. Until the admin chooses: all, except the ones that
+     * hold what employees are paid. A saved empty list means none.
+     *
+     * @return list<string>
+     */
+    public function insightReports(): array
+    {
+        $saved = $this->store->group('chatbox', ['insight_reports'])['insight_reports'];
+        if ($saved === null) {
+            return array_values(array_filter(
+                $this->availableReportIds(),
+                fn (string $id): bool => ! str_starts_with($id, self::SENSITIVE_REPORTS[0]),
+            ));
+        }
+        $decoded = json_decode($saved, true);
+
+        return is_array($decoded) ? array_values(array_filter($decoded, 'is_string')) : [];
+    }
+
+    /**
+     * The allowed reports that a module still offers: the id of a report of a module that was switched
+     * off since stays saved, but it cannot be used.
+     *
+     * @return list<string>
+     */
+    public function usableReports(): array
+    {
+        return array_values(array_intersect($this->insightReports(), $this->availableReportIds()));
+    }
+
+    /** Switched on and complete: the Insight screen is in the menu of the admins */
+    public function isInsightReady(): bool
+    {
+        return $this->isInsightEnabled() && $this->hasApiKey() && $this->usableReports() !== [];
     }
 
     public function hasApiKey(): bool
@@ -150,6 +284,17 @@ class ChatboxSettings
         }
         if (isset($values['hourly_limit'])) {
             $values['hourly_limit'] = (string) max(1, (int) $values['hourly_limit']);
+        }
+        if (array_key_exists('insight_enabled', $values)) {
+            $values['insight_enabled'] = ! empty($values['insight_enabled']) ? '1' : '0';
+        }
+        foreach (['insight_hourly_limit' => [1, 1000], 'insight_max_rows' => [1, 200], 'insight_max_tokens' => [200, 8000]] as $field => [$min, $max]) {
+            if (isset($values[$field])) {
+                $values[$field] = (string) min($max, max($min, (int) $values[$field]));
+            }
+        }
+        if (array_key_exists('insight_reports', $values)) {
+            $values['insight_reports'] = json_encode(array_values(array_unique(array_filter((array) $values['insight_reports'], 'is_string'))));
         }
         if (array_key_exists('tools', $values)) {
             $values['tools'] = json_encode(array_values(array_unique(array_filter((array) $values['tools'], 'is_string'))));
