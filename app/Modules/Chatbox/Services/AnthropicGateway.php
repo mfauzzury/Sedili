@@ -36,7 +36,7 @@ class AnthropicGateway implements ClaudeGateway
 
     public function __construct(private readonly ChatboxSettings $settings) {}
 
-    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta): ChatTurn
+    public function stream(string $model, array $system, array $messages, array $tools, callable $onDelta, ?int $maxTokens = null): ChatTurn
     {
         $text = '';
         $blocks = [];
@@ -48,7 +48,7 @@ class AnthropicGateway implements ClaudeGateway
             // policy reason the API retries on its default fallback model by itself. With lookups it does
             // not: a fallback turn would have to be given back as it is when the conversation goes on.
             $stream = $this->client()->beta->messages->createStream(
-                maxTokens: self::MAX_TOKENS,
+                maxTokens: $maxTokens ?? self::MAX_TOKENS,
                 messages: $this->wireMessages($messages),
                 model: $model,
                 outputConfig: ['effort' => 'low'],

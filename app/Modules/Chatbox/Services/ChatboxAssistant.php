@@ -53,7 +53,7 @@ class ChatboxAssistant
         if (! $this->settings->isReady()) {
             throw new ChatboxException('The assistant is not available right now.');
         }
-        if ($conversation !== null && $conversation->employee_id !== $employee->id) {
+        if ($conversation !== null && ($conversation->employee_id !== $employee->id || $conversation->kind !== ChatConversation::HR)) {
             throw new ChatboxException('This chat is not yours.');
         }
 

@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
  * @property int $conversation_id
  * @property string $role user|assistant
  * @property string $content
+ * @property list<array<string, mixed>>|null $visuals the reports shown under the answer (Insight)
  * @property int|null $input_tokens
  * @property int|null $output_tokens
  * @property int|null $cache_read_tokens
@@ -24,6 +25,8 @@ class ChatMessage extends Model
     protected $table = 'chatbox_messages';
 
     protected $guarded = [];
+
+    protected $casts = ['visuals' => 'array'];
 
     /**
      * The message as safe HTML: Markdown with the HTML of the text escaped, no unsafe links and no images.

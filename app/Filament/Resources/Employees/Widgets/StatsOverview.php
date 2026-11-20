@@ -45,7 +45,7 @@ class StatsOverview extends BaseWidget
             Stat::make('Total Employees', $employees()->count())
                 ->label('Total Employees')
                 ->color('primary')
-                ->description('Total number of employees in the organization')
+                ->description('All employees')
                 ->extraAttributes($commonAttributes)
                 ->icon('heroicon-o-user-group'),
             Stat::make('Active Employees', $employees()->where('is_active', true)->count())
@@ -57,11 +57,11 @@ class StatsOverview extends BaseWidget
                         'wire:click' => 'redirectToActiveEmployees()',
                     ]
                 )
-                ->description('Number of employees currently active employees')
+                ->description('Currently working')
                 ->icon('heroicon-o-check-circle'),
             Stat::make('Inactive Employees', $employees()->where('is_active', false)->count())
                 ->label('Inactive Employees')
-                ->description('Number of employees who are no longer active')
+                ->description('No longer active')
                 ->color('danger')
                 ->extraAttributes(
                     [
@@ -73,8 +73,8 @@ class StatsOverview extends BaseWidget
             Stat::make('Without supervisor', $withoutSupervisor)
                 ->label('Without supervisor')
                 ->description($withoutSupervisor === 0
-                    ? 'Every active employee has a supervisor'
-                    : 'Active employees with no supervisor and no department manager')
+                    ? 'All have a supervisor'
+                    : 'No supervisor or manager')
                 ->color($withoutSupervisor === 0 ? 'success' : 'warning')
                 ->extraAttributes(
                     [

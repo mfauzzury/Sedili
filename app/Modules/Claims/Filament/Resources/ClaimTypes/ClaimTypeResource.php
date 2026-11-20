@@ -22,7 +22,7 @@ class ClaimTypeResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'HR Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Claims';
 
     protected static ?int $navigationSort = 7;
 

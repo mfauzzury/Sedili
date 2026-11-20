@@ -9,6 +9,7 @@ use App\Modules\Chatbox\Services\ChatboxSettings;
 use App\Modules\Chatbox\Services\ChatToolbox;
 use App\Modules\Chatbox\Services\ClaudeGateway;
 use App\Modules\Chatbox\Services\KnowledgeImporter;
+use App\Modules\ModuleManager;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
@@ -130,6 +131,7 @@ class ChatboxSettingsPage extends Page
                         $this->generalTab(),
                         $this->knowledgeTab(),
                         $this->dataAccessTab(),
+                        $this->insightTab(),
                     ]),
             ]);
     }
@@ -259,6 +261,92 @@ class ChatboxSettingsPage extends Page
                 Text::make('No module offers lookups yet, or the modules that do are switched off.')
                     ->visible($available === []),
             ]);
+    }
+
+    private function insightTab(): Tab
+    {
+        $reports = [];
+        $descriptions = [];
+        foreach (app(ModuleManager::class)->reports() as $moduleKey => $module) {
+            foreach ($module['reports'] as $key => $report) {
+                $reports["$moduleKey.$key"] = $module['label'].': '.$report->title();
+                $descriptions["$moduleKey.$key"] = $report->description();
+            }
+        }
+
+        return Tab::make('Insight')
+            ->icon('heroicon-o-sparkles')
+            ->columns(2)
+            ->schema([
+                Text::make('Insight is a chat screen in the Reports menu where admins ask about the figures of the company in plain words. Claude runs the reports you allow below and writes what stands out; the chart and the table of each answer are drawn by the server. It uses the Claude API key of the General tab, and only admins can open it.')
+                    ->columnSpanFull(),
+                Toggle::make('insight_enabled')
+                    ->label('Show Insight in the Reports menu')
+                    ->helperText('It appears once the API key is saved and at least one report is allowed.')
+                    ->columnSpanFull(),
+                Select::make('insight_model')
+                    ->label('Model')
+                    ->options(ChatboxSettings::MODELS)
+                    ->required()
+                    ->live()
+                    ->selectablePlaceholder(false)
+                    ->helperText('Reading figures does not need the biggest model: Sonnet is the default and costs a fraction of Opus.'),
+                Select::make('insight_visuals')
+                    ->label('Under each answer')
+                    ->options(ChatboxSettings::INSIGHT_VISUALS)
+                    ->required()
+                    ->selectablePlaceholder(false)
+                    ->helperText('Costs no tokens: the server draws the chart and the table, Claude only names the report.'),
+                TextInput::make('insight_max_rows')
+                    ->label('Rows of a report given to Claude')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(200)
+                    ->required()
+                    ->live(onBlur: true)
+                    ->helperText('The rest of the table is on the screen, not in the bill. More rows mean more tokens on every question.'),
+                TextInput::make('insight_max_tokens')
+                    ->label('Longest answer (tokens)')
+                    ->numeric()
+                    ->minValue(200)
+                    ->maxValue(8000)
+                    ->required()
+                    ->helperText('About 0.75 words per token. Caps the output, which is the dearest part of a question.'),
+                TextInput::make('insight_hourly_limit')
+                    ->label('Questions per admin per hour')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(1000)
+                    ->required()
+                    ->helperText('Keeps the bill under control.'),
+                Text::make(fn (Get $get): string => $this->insightSummary((string) $get('insight_model'), (int) $get('insight_max_rows')))
+                    ->columnSpanFull(),
+                CheckboxList::make('insight_reports')
+                    ->label('Reports Claude may run')
+                    ->options($reports)
+                    ->descriptions(array_map(fn (string $description): string => $description, $descriptions))
+                    ->helperText('What a report returns (the figures and the first rows, with names of employees where the report lists them) is sent to Claude (Anthropic) to write the answer. Payroll is off until you switch it on: it lists what each employee is paid.')
+                    ->visible($reports !== [])
+                    ->columnSpanFull(),
+                Textarea::make('insight_instructions')
+                    ->label('Extra instructions')
+                    ->rows(3)
+                    ->maxLength(2000)
+                    ->helperText('Optional, for example "Our financial year starts in April" or "Show amounts in MYR".')
+                    ->columnSpanFull(),
+            ]);
+    }
+
+    private function insightSummary(string $model, int $maxRows): string
+    {
+        $cost = ChatboxCost::perInsightQuestion($model, max(1, $maxRows));
+
+        return $cost === null
+            ? ''
+            : sprintf(
+                'A question that runs one report costs about %s (an estimate at list prices: the Claude Console has the real bill). Charts and tables add nothing; the model, the rows given to Claude and the length of the answer are what the price depends on.',
+                ChatboxCost::format($cost),
+            );
     }
 
     /**

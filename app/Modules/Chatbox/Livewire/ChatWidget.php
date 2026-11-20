@@ -132,6 +132,6 @@ class ChatWidget extends Component
     /** @return \Illuminate\Database\Eloquent\Builder<ChatConversation> */
     private function ownConversations()
     {
-        return ChatConversation::query()->where('employee_id', Auth::id());
+        return ChatConversation::query()->where('employee_id', Auth::id())->where('kind', ChatConversation::HR);
     }
 }

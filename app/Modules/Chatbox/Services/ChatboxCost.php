@@ -47,6 +47,37 @@ final class ChatboxCost
         ];
     }
 
+    /** Tokens of the rules and of the tool of Insight: read from the cache after the first question */
+    public const INSIGHT_PROMPT_TOKENS = 1500;
+
+    /** Tokens of the figures of a report, besides its rows */
+    public const INSIGHT_RESULT_TOKENS = 200;
+
+    /** Tokens of a row of a report, as the text given to Claude */
+    public const INSIGHT_ROW_TOKENS = 30;
+
+    /** Tokens of the answer: the insight, not the table */
+    public const INSIGHT_ANSWER_TOKENS = 350;
+
+    /**
+     * What a question to Insight costs when it runs one report with a full table, with the prompt in
+     * the cache: two calls (the report is asked for, then the answer is written). Charts and tables
+     * are drawn by the server, so they are not in it.
+     */
+    public static function perInsightQuestion(string $model, int $maxRows): ?float
+    {
+        $price = self::PRICES[$model] ?? null;
+        if ($price === null) {
+            return null;
+        }
+        $result = self::INSIGHT_RESULT_TOKENS + $maxRows * self::INSIGHT_ROW_TOKENS;
+        $cached = 2 * self::INSIGHT_PROMPT_TOKENS * $price['read'];
+        $input = (2 * 150 + $result) * $price['input'];
+        $output = (60 + self::INSIGHT_ANSWER_TOKENS) * $price['output'];
+
+        return ($cached + $input + $output) / 1_000_000;
+    }
+
     public static function format(float $dollars): string
     {
         return $dollars < 0.001 ? 'less than $0.001' : '$'.number_format($dollars, $dollars < 0.1 ? 3 : 2);
