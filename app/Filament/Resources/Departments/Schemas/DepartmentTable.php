@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Filament\Resources\Departments\Schemas;
-use Filament\Tables\Table;
-use Filament\Actions\{ActionGroup, EditAction, ViewAction, DeleteAction, BulkActionGroup, DeleteBulkAction};
-use Filament\Tables\Columns\TextColumn;
-use App\Models\{Department};
 
+use App\Models\Department;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class DepartmentTable
 {
@@ -29,11 +34,11 @@ class DepartmentTable
                 TextColumn::make('description')
                     ->limit(50)
                     ->label('Description'),
-                TextColumn::make('manager_id')
-                    ->formatStateUsing(fn($record) => $record->manager?->full_name ?? 'No Manager')
+                TextColumn::make('manager.name')
+                    ->placeholder('No Manager')
                     ->label('Manager')
-                    ->searchable()
-                    ->sortable()
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable(['first_name', 'last_name'])
                     ->toggleable(),
             ])
             ->filters([
@@ -45,7 +50,7 @@ class DepartmentTable
                     EditAction::make(),
                     ViewAction::make(),
                     DeleteAction::make(),
-                ])
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -208,17 +208,9 @@ class AllCalendarWidget extends CalendarWidget
     {
         $start = $info->start;
         $end = $info->end;
+        // Every event that overlaps the displayed range, also one that starts before it or ends after it
         return Event::query()
-            ->where(function ($query) use ($start, $end) {
-                $query
-                    ->orWhereBetween('end_time', [$start, $end])
-                    ->whereBetween('start_time', [$start, $end])
-                    ->orWhere(function ($query) use ($start, $end) {
-                        $query->where('start_time', '<', $start)
-                            ->where('end_time', '>', $end);
-                    });
-
-
-            });
+            ->where('start_time', '<', $end)
+            ->where('end_time', '>', $start);
     }
 }

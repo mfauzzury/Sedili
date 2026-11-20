@@ -50,6 +50,35 @@ php artisan migrate --seed
 composer run dev
 ```
 
+### 🐳 Run with Docker (Laravel Sail)
+
+Runs the app (PHP 8.3), MySQL 8.0 and Mailpit. Your normal `.env` is left as is for native use; the container reads its own `.env.docker`.
+
+```bash
+cp .env.example .env
+php artisan key:generate   # or set APP_KEY in .env
+
+# Container env: same as .env but with the Docker hostnames
+sed -e 's/^DB_HOST=.*/DB_HOST=mysql/' \
+    -e 's/^DB_PORT=.*/DB_PORT=3306/' \
+    -e 's/^MAIL_MAILER=.*/MAIL_MAILER=smtp/' \
+    -e 's/^MAIL_HOST=.*/MAIL_HOST=mailpit/' \
+    -e 's/^MAIL_PORT=.*/MAIL_PORT=1025/' .env > .env.docker
+
+export WWWUSER=$(id -u) WWWGROUP=$(id -g)
+docker compose up -d --build
+docker compose exec laravel.test php artisan migrate --seed
+```
+
+-   App: http://localhost
+-   Mailpit (caught emails): http://localhost:8025
+-   MySQL from your host: `127.0.0.1:3308` (change with `FORWARD_DB_PORT`)
+-   Frontend dev server: `docker compose exec laravel.test npm run dev` (it only serves assets; open the app on http://localhost, not on port 5173)
+-   Emails (leave requests and decisions) are queued: the `queue` service of the compose file sends them. Without Docker, run `php artisan queue:work` (`composer dev` does it) or they stay in the `jobs` table.
+-   Checks: `composer analyse` (Larastan) and `composer style` (Pint, changed files only)
+
+If you change `.env` (for example `APP_KEY`), mirror it in `.env.docker`.
+
 ## 🤝 Contributing
 
 All contributions are welcome. Please fork the repo, create a feature branch and submit a pull request.

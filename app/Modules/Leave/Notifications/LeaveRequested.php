@@ -7,16 +7,16 @@ use App\Modules\Leave\Filament\Resources\Leaves\LeaveResource;
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /**
  * Email when an employee requests leave: to the admins, who decide in the admin panel, and to the
  * supervisor of the employee, who decides in the portal (Team Leave).
  */
-class LeaveRequested extends Notification
+class LeaveRequested extends LeaveNotification
 {
     public function __construct(public Leave $leave, public bool $asSupervisor = false)
     {
+        $this->afterCommit();
     }
 
     /**
@@ -29,7 +29,8 @@ class LeaveRequested extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $leave = $this->leave;
+        // Loaded again by the queue worker: lazy loading is forbidden, so the relation is asked for
+        $leave = $this->leave->loadMissing('employee');
         $employee = $leave->employee;
 
         $mail = (new MailMessage())

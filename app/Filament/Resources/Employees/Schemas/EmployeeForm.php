@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\Employees\Schemas;
-use Filament\Forms\Components\{TextInput, DatePicker, Select, Toggle, TextArea};
+use Filament\Forms\Components\{TextInput, DatePicker, Select, Toggle, Textarea};
 use Filament\Schemas\Schema;
 use App\Models\{Employee, Position, Department};
 use Closure;

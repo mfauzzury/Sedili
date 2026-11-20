@@ -106,6 +106,86 @@ class ModuleManager
     }
 
     /**
+     * What the employee has to do, from every enabled module: [module key => ['label' => ..., 'todos' => list<Todo>]].
+     * Modules with nothing to do are left out, and a module that fails does not break the others.
+     *
+     * @return array<string, array{label: string, todos: list<Todo>}>
+     */
+    public function todos(\App\Models\Employee $employee, string $panelId): array
+    {
+        $result = [];
+        foreach ($this->enabled() as $module) {
+            try {
+                $todos = $module->todos($employee, $panelId);
+            } catch (Throwable $e) {
+                report($e);
+                continue;
+            }
+            if ($todos !== []) {
+                $result[$module->key()] = ['label' => $module->label(), 'todos' => $todos];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * The reports of every enabled module: [module key => ['label' => ..., 'reports' => [report key => Report]]].
+     * Modules without reports are left out, and a module that fails does not break the others.
+     *
+     * @return array<string, array{label: string, reports: array<string, Report>}>
+     */
+    public function reports(): array
+    {
+        $result = [];
+        foreach ($this->enabled() as $module) {
+            try {
+                $reports = $module->reports();
+            } catch (Throwable $e) {
+                report($e);
+                continue;
+            }
+            foreach ($reports as $report) {
+                $result[$module->key()]['label'] = $module->label();
+                $result[$module->key()]['reports'][$report->key()] = $report;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * The chat tools of every enabled module, keyed by the name Claude sees ("leave_balance"). A module
+     * that fails does not break the others.
+     *
+     * @return array<string, array{module: Module, tool: ChatTool}>
+     */
+    public function chatTools(): array
+    {
+        $result = [];
+        foreach ($this->enabled() as $module) {
+            try {
+                $tools = $module->chatTools();
+            } catch (Throwable $e) {
+                report($e);
+                continue;
+            }
+            foreach ($tools as $tool) {
+                $result[$module->key().'_'.$tool->key()] = ['module' => $module, 'tool' => $tool];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * A report by its full id ("leave.balances"), null if unknown or if its module is disabled.
+     */
+    public function report(string $id): ?Report
+    {
+        [$module, $key] = array_pad(explode('.', $id, 2), 2, '');
+
+        return $this->reports()[$module]['reports'][$key] ?? null;
+    }
+
+    /**
      * @return array<string, bool>
      */
     private function states(): array

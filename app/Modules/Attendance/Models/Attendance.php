@@ -7,11 +7,24 @@ use App\Modules\Attendance\Database\Factories\AttendanceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Employee;
+use App\Models\Concerns\Audited;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $employee_id
+ * @property \Illuminate\Support\Carbon $date
+ * @property \Illuminate\Support\Carbon|null $clock_in
+ * @property \Illuminate\Support\Carbon|null $clock_out
+ * @property int|null $shift_id
+ * @property string|null $remarks
+ * @property-read Shift|null $shift
+ * @property-read Employee|null $employee
+ */
 class Attendance extends Model
 {
     //
-    use HasFactory;
+    use HasFactory, Audited;
 
     protected static function newFactory(): AttendanceFactory
     {
@@ -40,11 +53,13 @@ class Attendance extends Model
         'shift_name',
         'hours'
     ];
-    public function employee()
+    /** @return BelongsTo<Employee, $this> */
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
-    public function shift()
+    /** @return BelongsTo<Shift, $this> */
+    public function shift(): BelongsTo
     {
         return $this->belongsTo(Shift::class, 'shift_id');
     }
@@ -57,6 +72,10 @@ class Attendance extends Model
         if ($this->clock_in && $this->clock_out) {
             $start = Carbon::parse($this->clock_in);
             $end = Carbon::parse($this->clock_out);
+            // A night shift: the clock out is on the next day
+            if ($this->shift?->isOvernight() && $end->lt($start)) {
+                $end->addDay();
+            }
             // diffInMinutes already contains the hours and the remaining minutes
             return round($start->diffInMinutes($end, false) / 60, 2);
         }

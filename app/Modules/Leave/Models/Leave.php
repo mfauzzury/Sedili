@@ -2,12 +2,30 @@
 
 namespace App\Modules\Leave\Models;
 
+use App\Models\Concerns\Audited;
 use App\Models\Employee;
 use App\Modules\Leave\Services\LeaveService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $employee_id
+ * @property int|null $actioned_by
+ * @property string $leave_type
+ * @property \Illuminate\Support\Carbon|null $start_date
+ * @property \Illuminate\Support\Carbon|null $end_date
+ * @property float $days
+ * @property string $status
+ * @property string|null $rejection_reason
+ * @property string|null $notes
+ * @property string|null $attachment
+ * @property-read Employee|null $employee
+ */
 class Leave extends Model
 {
+    use Audited;
+
     //
     protected $table = 'leave';
     protected $fillable = [
@@ -60,7 +78,8 @@ class Leave extends Model
     }
 
 
-    public function employee()
+    /** @return BelongsTo<Employee, $this> */
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }

@@ -2,15 +2,44 @@ name: Test
 
 on:
   push:
-    branches:
-      - main
-      - dev
   pull_request:
     branches:
       - main
       - dev
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, bcmath, mysql, pdo_mysql
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # Only the files changed compared to main: the older code is not formatted with Pint yet.
+      # Advisory for now (73 files of this branch are not formatted); remove "continue-on-error"
+      # once they are (./vendor/bin/pint --diff=main), so that it blocks.
+      - name: Code style (Pint, changed files only)
+        continue-on-error: true
+        run: ./vendor/bin/pint --test --diff=origin/main
+
+      # Existing findings are in phpstan-baseline.neon; only new ones fail
+      - name: Static analysis (Larastan)
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
   test:
     runs-on: ubuntu-latest
     services:

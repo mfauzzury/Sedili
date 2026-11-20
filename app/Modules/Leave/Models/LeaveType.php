@@ -2,10 +2,24 @@
 
 namespace App\Modules\Leave\Models;
 
+use App\Models\Concerns\Audited;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $color
+ * @property float|null $days_per_year
+ * @property list<array{min_years: int, days: float}>|null $tiers
+ * @property string|null $gender_restriction
+ * @property bool $count_calendar_days
+ * @property bool $requires_attachment
+ * @property bool $is_active
+ */
 class LeaveType extends Model
 {
+    use Audited;
+
     protected $fillable = [
         'name',
         'color',

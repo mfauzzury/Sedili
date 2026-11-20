@@ -77,6 +77,50 @@ abstract class Module
     }
 
     /**
+     * What the employee has to do in this module (open tasks, unread messages, requests to approve...),
+     * shown on the dashboard of the portal. Only called while the module is enabled. Keep it short:
+     * a few lines, the most urgent first, one aggregated line rather than one per item when there are many.
+     *
+     * @param string $panelId id of the panel the list is for (admin, portal)
+     * @return list<Todo>
+     */
+    public function todos(\App\Models\Employee $employee, string $panelId): array
+    {
+        return [];
+    }
+
+    /**
+     * The reports of the module, listed in Reports (admin panel) while the module and the Reports
+     * module are enabled.
+     *
+     * @return list<Report>
+     */
+    public function reports(): array
+    {
+        return [];
+    }
+
+    /**
+     * Lookups the module offers to the chat assistant (Chatbox module), for example "my leave balance".
+     * They are available once the Chatbox module is enabled and the admin has switched them on.
+     *
+     * @return list<ChatTool>
+     */
+    public function chatTools(): array
+    {
+        return [];
+    }
+
+    /**
+     * The page where the module is configured, linked from System > Modules while it is enabled
+     * (null: nothing to configure).
+     */
+    public function settingsUrl(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Called at boot, only when the module is enabled (observers, events, etc.).
      */
     public function boot(): void

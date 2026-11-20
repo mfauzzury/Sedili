@@ -3,21 +3,32 @@
 namespace App\Modules\Leave\Filament\Widgets;
 
 use App\Models\Employee;
-use App\Modules\Leave\Filament\Portal\MyLeaveResource;
-use App\Modules\Leave\Models\LeaveType;
+use App\Modules\Leave\Services\LeaveBalanceSummary;
 use App\Modules\Leave\Services\LeaveService;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Remaining leave days of the logged in employee (types with a limit), for the current year.
+ * Leave balance of the logged in employee for the current year, one small ring per leave type that
+ * has a limit: the days left in the colour of the type, the pending days in amber, the days already
+ * taken in grey.
  */
-class MyLeaveBalances extends BaseWidget
+class MyLeaveBalances extends Widget
 {
-    protected ?string $heading = 'My leave balance';
+    protected string $view = 'leave::my-leave-balances';
 
-    protected function getStats(): array
+    protected int|string|array $columnSpan = 'full';
+
+    public function getYear(): int
+    {
+        return (int) now()->year;
+    }
+
+    /**
+     * @return list<array{name: string, color: string, left: string, total: string, taken: string, pending: string, remaining: float, pendingShare: float, over: bool}>
+     *   "remaining" and "pendingShare" are percentages (0 to 100) of the entitlement, to draw the ring
+     */
+    public function getBalances(): array
     {
         $employee = Auth::user();
         if (!$employee instanceof Employee) {
@@ -25,19 +36,25 @@ class MyLeaveBalances extends BaseWidget
         }
 
         $service = app(LeaveService::class);
-        $year = (int) now()->year;
-        $stats = [];
-        foreach (MyLeaveResource::eligibleTypes($employee) as $name) {
-            $type = LeaveType::where('name', $name)->first();
-            $entitlement = $service->entitlement($employee, $type, $year);
-            if ($entitlement === null) {
-                continue;
-            }
-            $left = $service->balance($employee, $type, $year);
-            $stats[] = Stat::make($type->name, $service->format($left) . ' / ' . $service->format($entitlement))
-                ->description("days left in {$year}")
-                ->color($left <= 0 ? 'danger' : 'primary');
+
+        $balances = [];
+        foreach (app(LeaveBalanceSummary::class)->for($employee, $this->getYear()) as $row) {
+            $entitlement = $row['entitlement'];
+            $share = fn(float $part): float => $entitlement > 0 ? max(0.0, min(100.0, $part / $entitlement * 100)) : 0.0;
+
+            $balances[] = [
+                'name' => $row['type']->name,
+                'color' => $row['type']->displayColor(),
+                'left' => $service->format($row['left']),
+                'total' => $service->format($entitlement),
+                'taken' => $service->format($row['approved']),
+                'pending' => $service->format($row['pending']),
+                'remaining' => $share($row['left']),
+                'pendingShare' => $share($row['pending']),
+                'over' => $row['left'] <= 0,
+            ];
         }
-        return $stats;
+
+        return $balances;
     }
 }

@@ -28,7 +28,7 @@ class EmailSettingsTest extends TestCase
 
     private function actingAsEmployee(string $role): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Test',
             'last_name' => ucfirst($role),
@@ -137,6 +137,8 @@ class EmailSettingsTest extends TestCase
     {
         $this->actingAsEmployee('admin');
         app(CompanyProfile::class)->update(['name' => 'Sedili Sdn Bhd', 'logo' => 'branding/logo.png']);
+        // Only the leave emails, so that the first preview is a leave one
+        app(ModuleManager::class)->setEnabled('claims', false);
 
         config(['app.name' => 'Laravel']);
         $page = Livewire::test(EmailSettings::class);
@@ -148,7 +150,7 @@ class EmailSettingsTest extends TestCase
         $this->assertStringContainsString('Test Admin requested leave', $html);
         $this->assertStringContainsString('Family trip', $html);
         $this->assertStringContainsString('/storage/branding/logo.png', $html);
-        $this->assertStringContainsString(date('Y') . ' Sedili Sdn Bhd', html_entity_decode($html));
+        $this->assertStringContainsString(date('Y').' Sedili Sdn Bhd', html_entity_decode($html));
         // Header, sign-off and footer use the company, never the app name
         $this->assertStringNotContainsString('Laravel', $html);
         $this->assertMatchesRegularExpression('/Regards,\s*<br\s*\/?>\s*Sedili Sdn Bhd/', $html);
@@ -174,10 +176,11 @@ class EmailSettingsTest extends TestCase
         $this->assertStringNotContainsString('<img', $html);
     }
 
-    public function test_there_is_no_preview_when_the_module_with_the_emails_is_disabled(): void
+    public function test_there_is_no_preview_when_the_modules_with_emails_are_disabled(): void
     {
         $this->actingAsEmployee('admin');
         app(ModuleManager::class)->setEnabled('leave', false);
+        app(ModuleManager::class)->setEnabled('claims', false);
 
         $page = Livewire::test(EmailSettings::class);
 

@@ -167,7 +167,32 @@ class MyLeaveTest extends TestCase
 
         Livewire::test(MyLeaveBalances::class)
             ->assertSee('Annual Leave')
-            ->assertSee('5 / 8');
+            ->assertSee('5 of 8 days left');
+    }
+
+    public function test_the_balance_widget_splits_the_days_taken_and_the_days_pending(): void
+    {
+        $this->leave($this->alice, '2026-03-02', '2026-03-03', 'Approved'); // 2 taken
+        $this->leave($this->alice, '2026-03-09', '2026-03-09');             // 1 pending
+        $this->leave($this->alice, '2026-03-16', '2026-03-16', 'Rejected'); // not charged
+
+        $widget = Livewire::test(MyLeaveBalances::class);
+
+        $widget->assertSee('5 of 8 days left')->assertSee('2 taken')->assertSee('1 pending');
+        $balance = $widget->instance()->getBalances()[0];
+        $this->assertSame(62.5, $balance['remaining']);   // 5 of 8
+        $this->assertSame(12.5, $balance['pendingShare']); // 1 of 8
+        $this->assertFalse($balance['over']);
+    }
+
+    public function test_the_balance_widget_flags_an_exhausted_balance(): void
+    {
+        $this->leave($this->alice, '2026-03-02', '2026-03-13', 'Approved'); // more than the 8 days
+
+        $balance = Livewire::test(MyLeaveBalances::class)->instance()->getBalances()[0];
+
+        $this->assertTrue($balance['over']);
+        $this->assertSame(0.0, $balance['remaining']);
     }
 
     public function test_the_page_is_open_to_an_employee_and_closed_to_anonymous_visitors(): void

@@ -36,13 +36,16 @@ class AdminPanelProvider extends PanelProvider
             ->path('/')
             ->passwordReset()
             ->profile()
-            ->login()
+            ->login(\App\Filament\Auth\Login::class)
 
             ->databaseNotifications()
             ->authPasswordBroker('employees')
             ->brandName(fn() => app(CompanyProfile::class)->name() ?? 'Admin Panel')
             ->brandLogo(fn() => app(CompanyProfile::class)->logoUrl())
             ->brandLogoHeight('1.5rem')
+            // Breadcrumbs on every page, with the menu group in front (Organization > Org Chart)
+            ->breadcrumbs(true, hasNavigationHierarchy: true)
+            ->favicon(fn() => app(CompanyProfile::class)->faviconUrl())
             ->colors([
                 'primary' => Color::Sky,
             ])
@@ -66,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 'Work space',
                 'Organization',
                 'HR Management',
+                'Attendance',
                 'System',
             ])
             ->authMiddleware([

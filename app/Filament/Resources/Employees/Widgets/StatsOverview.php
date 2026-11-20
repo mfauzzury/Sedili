@@ -12,10 +12,12 @@ class StatsOverview extends BaseWidget
     {
         return redirect()->to('employees?tableFilters[is_active][isActive]=false&tableFilters[is_inactive][isActive]=false');
     }
+
     public function redirectToInactiveEmployees()
     {
         return redirect()->to('employees?tableFilters[is_active][isActive]=false&tableFilters[is_inactive][isActive]=true');
     }
+
     public function redirectToActiveEmployees()
     {
         return redirect()->to('employees?tableFilters[is_active][isActive]=true&tableFilters[is_inactive][isActive]=false');
@@ -28,42 +30,43 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        // The same people as the Employees list, which does not show the admins
-        $withoutSupervisor = Employee::role('employee')->withoutRole('admin')
-            ->where('is_active', true)->withoutSupervisor()->count();
+        // The same people as the Employees list, which does not show the admins: the numbers
+        // must match what the list shows once clicked
+        $employees = fn () => Employee::role('employee')->withoutRole('admin');
+        $withoutSupervisor = $employees()->where('is_active', true)->withoutSupervisor()->count();
 
         $commonAttributes = [
             'class' => 'cursor-pointer',
-            'wire:click' => "redirectToEmployees()",
+            'wire:click' => 'redirectToEmployees()',
         ];
 
         return [
             //
-            Stat::make('Total Employees', Employee::count())
+            Stat::make('Total Employees', $employees()->count())
                 ->label('Total Employees')
                 ->color('primary')
                 ->description('Total number of employees in the organization')
                 ->extraAttributes($commonAttributes)
                 ->icon('heroicon-o-user-group'),
-            Stat::make('Active Employees', Employee::where('is_active', true)->count())
+            Stat::make('Active Employees', $employees()->where('is_active', true)->count())
                 ->color('success')
                 ->label('Active Employees')
                 ->extraAttributes(
                     [
                         'class' => 'cursor-pointer',
-                        'wire:click' => "redirectToActiveEmployees()"
+                        'wire:click' => 'redirectToActiveEmployees()',
                     ]
                 )
                 ->description('Number of employees currently active employees')
                 ->icon('heroicon-o-check-circle'),
-            Stat::make('Inactive Employees', Employee::where('is_active', false)->count())
+            Stat::make('Inactive Employees', $employees()->where('is_active', false)->count())
                 ->label('Inactive Employees')
                 ->description('Number of employees who are no longer active')
                 ->color('danger')
                 ->extraAttributes(
                     [
                         'class' => 'cursor-pointer',
-                        'wire:click' => "redirectToInactiveEmployees()"
+                        'wire:click' => 'redirectToInactiveEmployees()',
                     ]
                 )
                 ->icon('heroicon-o-x-circle'),
@@ -76,7 +79,7 @@ class StatsOverview extends BaseWidget
                 ->extraAttributes(
                     [
                         'class' => 'cursor-pointer',
-                        'wire:click' => "redirectToWithoutSupervisor()"
+                        'wire:click' => 'redirectToWithoutSupervisor()',
                     ]
                 )
                 ->icon('heroicon-o-exclamation-triangle'),

@@ -27,7 +27,7 @@ class CompanySettingsTest extends TestCase
 
     private function actingAsEmployee(string $role): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->forceFill([
             'first_name' => 'Test',
             'last_name' => ucfirst($role),
@@ -70,10 +70,10 @@ class CompanySettingsTest extends TestCase
         $this->assertSame('Sedili Sdn Bhd', Filament::getPanel('admin')->getBrandName());
         $this->assertSame('Sedili Sdn Bhd', Filament::getPanel('portal')->getBrandName());
         $this->assertSame($profile->logoUrl(), Filament::getPanel('portal')->getBrandLogo());
-        $this->assertStringEndsWith('/storage/' . $profile->get('logo'), $profile->logoUrl());
+        $this->assertStringEndsWith('/storage/'.$profile->get('logo'), $profile->logoUrl());
 
         // The logo is loaded from the host the page is opened on, whatever APP_URL says
-        $this->get('http://sedili.test:8000/')->assertOk()->assertSee('http://sedili.test:8000/storage/' . $profile->get('logo'), false);
+        $this->get('http://sedili.test:8000/')->assertOk()->assertSee('http://sedili.test:8000/storage/'.$profile->get('logo'), false);
     }
 
     public function test_the_files_of_the_public_disk_have_a_url_that_works_on_any_host(): void
@@ -81,7 +81,7 @@ class CompanySettingsTest extends TestCase
         // The upload field gives this URL to the browser to load the saved logo and read its size. It must
         // not contain APP_URL: opened on another host or port, the browser would never get the file and
         // the field would stay on "Waiting for size" (the fake disk of these tests does not use this config).
-        $disk = Storage::build(config('filesystems.disks.' . CompanyProfile::DISK));
+        $disk = Storage::build(config('filesystems.disks.'.CompanyProfile::DISK));
 
         $this->assertSame('/storage/branding/logo.png', $disk->url('branding/logo.png'));
     }
@@ -104,6 +104,63 @@ class CompanySettingsTest extends TestCase
         $this->assertNotSame($first, $second);
         Storage::disk(CompanyProfile::DISK)->assertMissing($first);
         Storage::disk(CompanyProfile::DISK)->assertExists($second);
+    }
+
+    public function test_the_favicon_is_saved_and_used_by_both_panels(): void
+    {
+        $this->assertNull(Filament::getPanel('admin')->getFavicon());
+
+        $this->actingAsEmployee('admin');
+        Livewire::test(CompanySettings::class)
+            ->fillForm(['favicon' => UploadedFile::fake()->image('favicon.png', 64, 64)])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $profile = app(CompanyProfile::class);
+        Storage::disk(CompanyProfile::DISK)->assertExists($profile->get('favicon'));
+        $this->assertStringEndsWith('/storage/'.$profile->get('favicon'), $profile->faviconUrl());
+        $this->assertSame($profile->faviconUrl(), Filament::getPanel('admin')->getFavicon());
+        $this->assertSame($profile->faviconUrl(), Filament::getPanel('portal')->getFavicon());
+
+        // The tab icon is loaded from the host the page is opened on, whatever APP_URL says
+        $this->get('http://sedili.test:8000/')->assertOk()->assertSee('http://sedili.test:8000/storage/'.$profile->get('favicon'), false);
+    }
+
+    public function test_replacing_the_favicon_deletes_the_previous_file_and_keeps_the_logo(): void
+    {
+        $this->actingAsEmployee('admin');
+        Livewire::test(CompanySettings::class)
+            ->fillForm([
+                'logo' => UploadedFile::fake()->image('logo.png', 400, 100),
+                'favicon' => UploadedFile::fake()->image('one.png', 64, 64),
+            ])
+            ->call('save');
+        $logo = app(CompanyProfile::class)->get('logo');
+        $first = app(CompanyProfile::class)->get('favicon');
+
+        Livewire::test(CompanySettings::class)
+            ->set('data.favicon', [])
+            ->fillForm(['favicon' => UploadedFile::fake()->image('two.png', 64, 64)])
+            ->call('save');
+        $second = app(CompanyProfile::class)->get('favicon');
+
+        $this->assertNotSame($first, $second);
+        Storage::disk(CompanyProfile::DISK)->assertMissing($first);
+        Storage::disk(CompanyProfile::DISK)->assertExists($second);
+        Storage::disk(CompanyProfile::DISK)->assertExists($logo);
+        $this->assertSame($logo, app(CompanyProfile::class)->get('logo'));
+    }
+
+    public function test_a_favicon_that_is_not_an_icon_or_png_is_refused(): void
+    {
+        $this->actingAsEmployee('admin');
+
+        Livewire::test(CompanySettings::class)
+            ->fillForm(['favicon' => UploadedFile::fake()->create('favicon.pdf', 10, 'application/pdf')])
+            ->call('save')
+            ->assertHasFormErrors(['favicon']);
+
+        $this->assertNull(app(CompanyProfile::class)->get('favicon'));
     }
 
     public function test_a_file_that_is_not_an_image_is_refused(): void

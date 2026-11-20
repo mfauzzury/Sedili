@@ -8,7 +8,9 @@ use App\Modules\Leave\Notifications\LeaveDecided;
 use App\Modules\Leave\Notifications\LeaveRequested;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class LeaveEmailTest extends TestCase
@@ -51,6 +53,29 @@ class LeaveEmailTest extends TestCase
             'status' => $status,
             ...$extra,
         ]);
+    }
+
+    public function test_the_emails_are_queued_not_sent_during_the_request(): void
+    {
+        $this->assertInstanceOf(ShouldQueue::class, new LeaveRequested($this->leave('Approved')));
+        $this->assertInstanceOf(ShouldQueue::class, new LeaveDecided($this->leave('Approved')));
+
+        Queue::fake();
+        $this->leave();
+
+        // One job per recipient: the only active admin
+        Queue::assertPushed(\Illuminate\Notifications\SendQueuedNotifications::class, fn($job) => $job->notification instanceof LeaveRequested);
+    }
+
+    public function test_a_queued_request_email_is_built_by_the_worker_without_lazy_loading(): void
+    {
+        $leave = $this->leave();
+        // What the worker does: the model comes back from the database without its relations
+        $fresh = Leave::findOrFail($leave->id);
+
+        $mail = (new LeaveRequested($fresh))->toMail($this->admin);
+
+        $this->assertStringContainsString('Alice', $mail->subject);
     }
 
     public function test_the_active_admins_are_emailed_when_leave_is_requested(): void

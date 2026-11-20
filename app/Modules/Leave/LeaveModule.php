@@ -2,6 +2,8 @@
 
 namespace App\Modules\Leave;
 
+use App\Modules\Leave\ChatTools\LeaveBalanceTool;
+use App\Modules\Leave\ChatTools\MyLeaveRequestsTool;
 use App\Modules\Leave\Database\Seeders\HolidaySeeder;
 use App\Modules\Leave\Database\Seeders\LeaveTypeSeeder;
 use App\Modules\Leave\Filament\Pages\LeaveBalances;
@@ -19,7 +21,10 @@ use App\Modules\Leave\Notifications\LeaveDecided;
 use App\Modules\Leave\Notifications\LeaveRequested;
 use App\Modules\Leave\Observers\LeaveObserver;
 use App\Modules\Leave\Http\LeaveAttachmentController;
+use App\Modules\Leave\Reports\LeaveBalanceReport;
+use App\Modules\Leave\Reports\LeaveTakenReport;
 use App\Modules\Module;
+use App\Modules\Todo;
 use Illuminate\Support\Facades\Route;
 
 class LeaveModule extends Module
@@ -39,6 +44,11 @@ class LeaveModule extends Module
         return 'Leave requests, leave types and entitlements, public holidays, leave balances and the leave calendar; employees request their own leave in the portal.';
     }
 
+    public function chatTools(): array
+    {
+        return [new LeaveBalanceTool, new MyLeaveRequestsTool];
+    }
+
     public function filament(string $panelId): array
     {
         return match ($panelId) {
@@ -56,6 +66,39 @@ class LeaveModule extends Module
             ],
             default => [],
         };
+    }
+
+    /**
+     * One line with the leave requests that wait for the decision of the employee (a supervisor).
+     */
+    public function todos(Employee $employee, string $panelId): array
+    {
+        if ($panelId !== 'portal') {
+            return [];
+        }
+
+        $requests = Leave::query()
+            ->with('employee')
+            ->where('status', 'Pending')
+            ->whereIn('employee_id', Employee::query()->reportingTo($employee)->select('employees.id'))
+            ->orderBy('start_date')
+            ->get();
+        if ($requests->isEmpty()) {
+            return [];
+        }
+
+        $names = $requests->map(fn(Leave $leave) => $leave->employee?->first_name)->filter()->unique();
+        $shown = $names->take(3)->implode(', ');
+        $detail = $names->count() > 3 ? $shown . ' and ' . ($names->count() - 3) . ' more' : $shown;
+
+        return [new Todo(
+            title: $requests->count() === 1 ? '1 leave request to approve' : $requests->count() . ' leave requests to approve',
+            url: TeamLeaveResource::getUrl(),
+            detail: $detail ?: null,
+            badge: 'From ' . $requests->first()->start_date->format('j M'),
+            color: 'warning',
+            icon: 'heroicon-o-user-minus',
+        )];
     }
 
     public function emailPreviews(): array
@@ -98,5 +141,10 @@ class LeaveModule extends Module
     public function seeders(): array
     {
         return [LeaveTypeSeeder::class, HolidaySeeder::class];
+    }
+
+    public function reports(): array
+    {
+        return [app(LeaveTakenReport::class), app(LeaveBalanceReport::class)];
     }
 }

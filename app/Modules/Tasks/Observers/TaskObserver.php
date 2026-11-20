@@ -26,8 +26,14 @@ class TaskObserver
      */
     public function updated(Task $task): void
     {
-        //
-        $this->sendTaskNotification($task, 'Task Updated');
+        if ($task->wasChanged('assignee_id')) {
+            // Somebody new gets the task (the previous assignee is not told)
+            $this->sendTaskNotification($task, 'New Task Assigned');
+        } elseif ($task->wasChanged(['title', 'description', 'status', 'due_date'])) {
+            // Not for "position" and "sort_order" only: moving a card on the board re-numbers the
+            // cards around it, which would notify all their assignees
+            $this->sendTaskNotification($task, 'Task Updated');
+        }
     }
 
     private function sendTaskNotification(Task $task, string $title): void
