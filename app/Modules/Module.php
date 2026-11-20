@@ -90,6 +90,17 @@ abstract class Module
     }
 
     /**
+     * The reports of the module, listed in Reports (admin panel) while the module and the Reports
+     * module are enabled.
+     *
+     * @return list<Report>
+     */
+    public function reports(): array
+    {
+        return [];
+    }
+
+    /**
      * The page where the module is configured, linked from System > Modules while it is enabled
      * (null: nothing to configure).
      */

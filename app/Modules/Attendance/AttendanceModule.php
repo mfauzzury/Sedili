@@ -3,6 +3,7 @@
 namespace App\Modules\Attendance;
 
 use App\Modules\Attendance\Filament\Resources\Attendances\AttendanceResource;
+use App\Modules\Attendance\Reports\AttendanceSummaryReport;
 use App\Modules\Module;
 
 class AttendanceModule extends Module
@@ -25,5 +26,10 @@ class AttendanceModule extends Module
     public function filament(string $panelId): array
     {
         return $panelId === 'admin' ? ['resources' => [AttendanceResource::class]] : [];
+    }
+
+    public function reports(): array
+    {
+        return [new AttendanceSummaryReport];
     }
 }

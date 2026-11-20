@@ -16,6 +16,8 @@ use App\Modules\Claims\Notifications\ClaimPaid;
 use App\Modules\Claims\Notifications\ClaimSubmitted;
 use App\Modules\Claims\Observers\ClaimItemObserver;
 use App\Modules\Claims\Observers\ClaimObserver;
+use App\Modules\Claims\Reports\ClaimsByEmployeeReport;
+use App\Modules\Claims\Reports\ClaimsByTypeReport;
 use App\Modules\Module;
 use App\Modules\Todo;
 use Illuminate\Support\Carbon;
@@ -145,5 +147,10 @@ class ClaimsModule extends Module
     public function seeders(): array
     {
         return [ClaimTypeSeeder::class];
+    }
+
+    public function reports(): array
+    {
+        return [new ClaimsByTypeReport, new ClaimsByEmployeeReport];
     }
 }

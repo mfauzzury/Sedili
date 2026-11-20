@@ -10,6 +10,17 @@ use App\Models\Employee;
 use App\Models\Concerns\Audited;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $employee_id
+ * @property \Illuminate\Support\Carbon $date
+ * @property \Illuminate\Support\Carbon|null $clock_in
+ * @property \Illuminate\Support\Carbon|null $clock_out
+ * @property int|null $shift_id
+ * @property string|null $remarks
+ * @property-read Shift|null $shift
+ * @property-read Employee|null $employee
+ */
 class Attendance extends Model
 {
     //

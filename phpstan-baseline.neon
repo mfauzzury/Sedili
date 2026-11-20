@@ -61,36 +61,6 @@ parameters:
 			path: app/Filament/Resources/Employees/Schemas/EmployeeTable.php
 
 		-
-			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Attendance\:\:\$clock_in\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Attendance/Models/Attendance.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Attendance\:\:\$clock_out\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Attendance/Models/Attendance.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Attendance/Models/Attendance.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$end_time\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Attendance/Models/Shift.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Attendance\\Models\\Shift\:\:\$start_time\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Attendance/Models/Shift.php
-
-		-
 			message: '#^Method App\\Modules\\Attendance\\Tests\\AttendanceTest\:\:attendance\(\) should return App\\Modules\\Attendance\\Models\\Attendance but returns Illuminate\\Database\\Eloquent\\Model\.$#'
 			identifier: return.type
 			count: 1
@@ -193,12 +163,6 @@ parameters:
 			path: app/Modules/Inbox/Observers/MessageObserver.php
 
 		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$color\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Database/Seeders/LeaveTypeSeeder.php
-
-		-
 			message: '#^Offset ''color'' on array\{name\: ''Annual Leave'', color\: ''\#2563eb'', tiers\: array\{array\{min_years\: 0, days\: 8\}, array\{min_years\: 2, days\: 12\}, array\{min_years\: 5, days\: 16\}\}\}\|array\{name\: ''Compassionate Leave'', color\: ''\#475569'', days_per_year\: 3\}\|array\{name\: ''Hospitalisation…'', color\: ''\#9333ea'', days_per_year\: 60, requires_attachment\: true\}\|array\{name\: ''Maternity Leave'', color\: ''\#db2777'', days_per_year\: 98, gender_restriction\: ''Female'', count_calendar_days\: true\}\|array\{name\: ''Paternity Leave'', color\: ''\#0891b2'', days_per_year\: 7, gender_restriction\: ''Male''\}\|array\{name\: ''Sick Leave'', color\: ''\#dc2626'', requires_attachment\: true, tiers\: array\{array\{min_years\: 0, days\: 14\}, array\{min_years\: 2, days\: 18\}, array\{min_years\: 5, days\: 22\}\}\}\|array\{name\: ''Unpaid Leave'', color\: ''\#d97706''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -209,36 +173,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: app/Modules/Leave/Database/Seeders/LeaveTypeSeeder.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$gender_restriction\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Filament/Pages/LeaveBalances.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Leave/Filament/Pages/LeaveBalances.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Leave/Filament/Pages/LeaveCalendar.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Leave/Filament/Portal/MyLeaveResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Modules/Leave/Filament/Resources/Leaves/Schemas/LeaveForm.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
@@ -259,34 +193,10 @@ parameters:
 			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
 
 		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
 			path: app/Modules/Leave/Filament/Widgets/LeaveCalendarWidget.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Filament/Widgets/MyLeaveBalances.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$count_calendar_days\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Models/Leave.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$color\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Models/LeaveType.php
 
 		-
 			message: '#^Call to function in_array\(\) with arguments ''Approved''\|''Rejected'', array\{''Approved'', ''Rejected''\} and true will always evaluate to true\.$#'
@@ -301,46 +211,10 @@ parameters:
 			path: app/Modules/Leave/Services/LeaveService.php
 
 		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$count_calendar_days\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Services/LeaveService.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$days_per_year\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Services/LeaveService.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$gender_restriction\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Services/LeaveService.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Modules/Leave/Services/LeaveService.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$tiers\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Services/LeaveService.php
-
-		-
 			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\Holiday\:\:\$date\.$#'
 			identifier: property.notFound
 			count: 6
 			path: app/Modules/Leave/Tests/HolidaySeederTest.php
-
-		-
-			message: '#^Access to an undefined property App\\Modules\\Leave\\Models\\LeaveType\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Leave/Tests/LeaveEvidenceTest.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignIdColumnDefinition\:\:onDelete\(\)\.$#'

@@ -4,6 +4,7 @@
 
 ### Added
 
+- Reports (admin panel): one page with the reports of every enabled module (headcount and turnover, leave taken, leave balances, claims by type and by employee, attendance summary, payroll summary, task workload). Each report has a period (presets or custom dates, or a year) and a department filter kept in the URL, headline figures, a chart, a searchable and sortable table and a CSV export. Modules add their reports with `Module::reports()`
 - Leave emails are queued (a worker sends them), so a slow or broken mail server no longer delays the request; the Docker setup has a `queue` service for it
 - Larastan (static analysis, `composer analyse`, existing findings in `phpstan-baseline.neon`) and a Pint check of the changed files in the GitHub workflow
 - Indexes on leave (status, dates) and attendances (date)

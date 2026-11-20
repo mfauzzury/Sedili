@@ -5,6 +5,12 @@ namespace App\Modules\Attendance\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $start_time H:i:s
+ * @property string $end_time H:i:s
+ */
 class Shift extends Model
 {
     //

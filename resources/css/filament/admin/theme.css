@@ -2,6 +2,7 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../app/Modules/**/*';
 
 @source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
 @source '../../../../vendor/guava/calendar/resources/**/*';
@@ -756,4 +757,14 @@
 
 .dark .fi-btn.fi-color-black:not(.fi-outlined):hover {
     background-color: var(--gray-200) !important;
+}
+
+/* Charts of the Reports module: solid bars in the primary colour (Filament's default fill is a
+   pale tint that reads as a background rather than as data) */
+.report-chart .fi-wi-chart-bg-color {
+    color: var(--primary-500);
+}
+
+.dark .report-chart .fi-wi-chart-bg-color {
+    color: var(--primary-400);
 }

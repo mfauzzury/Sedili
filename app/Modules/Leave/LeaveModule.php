@@ -19,6 +19,8 @@ use App\Modules\Leave\Notifications\LeaveDecided;
 use App\Modules\Leave\Notifications\LeaveRequested;
 use App\Modules\Leave\Observers\LeaveObserver;
 use App\Modules\Leave\Http\LeaveAttachmentController;
+use App\Modules\Leave\Reports\LeaveBalanceReport;
+use App\Modules\Leave\Reports\LeaveTakenReport;
 use App\Modules\Module;
 use App\Modules\Todo;
 use Illuminate\Support\Facades\Route;
@@ -132,5 +134,10 @@ class LeaveModule extends Module
     public function seeders(): array
     {
         return [LeaveTypeSeeder::class, HolidaySeeder::class];
+    }
+
+    public function reports(): array
+    {
+        return [app(LeaveTakenReport::class), app(LeaveBalanceReport::class)];
     }
 }

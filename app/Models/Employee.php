@@ -16,6 +16,11 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property \Illuminate\Support\Carbon|null $date_of_birth
+ * @property \Illuminate\Support\Carbon|null $hire_date
+ * @property \Illuminate\Support\Carbon|null $termination_date
+ */
 class Employee extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */

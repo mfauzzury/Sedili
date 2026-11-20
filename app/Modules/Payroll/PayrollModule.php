@@ -4,6 +4,7 @@ namespace App\Modules\Payroll;
 
 use App\Modules\Module;
 use App\Modules\Payroll\Filament\Resources\Payrolls\PayrollResource;
+use App\Modules\Payroll\Reports\PayrollSummaryReport;
 
 class PayrollModule extends Module
 {
@@ -25,5 +26,10 @@ class PayrollModule extends Module
     public function filament(string $panelId): array
     {
         return $panelId === 'admin' ? ['resources' => [PayrollResource::class]] : [];
+    }
+
+    public function reports(): array
+    {
+        return [new PayrollSummaryReport];
     }
 }

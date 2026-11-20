@@ -8,6 +8,7 @@ use App\Modules\Todo;
 use App\Modules\Tasks\Filament\Pages\TaskBoard;
 use App\Modules\Tasks\Models\Task;
 use App\Modules\Tasks\Observers\TaskObserver;
+use App\Modules\Tasks\Reports\TaskWorkloadReport;
 
 class TasksModule extends Module
 {
@@ -93,5 +94,10 @@ class TasksModule extends Module
     public function boot(): void
     {
         Task::observe(TaskObserver::class);
+    }
+
+    public function reports(): array
+    {
+        return [new TaskWorkloadReport];
     }
 }
